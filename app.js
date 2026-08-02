@@ -23,7 +23,7 @@ function shuffle(array) {
 document.addEventListener("alpine:init", () => {
   Alpine.data("quizApp", () => ({
     // ---------- state ----------
-    screen: "connect", // connect | setup | quiz | results
+    screen: "loading", // loading | connect | setup | quiz | results
 
     url: localStorage.getItem("quiz_supabase_url") || "",
     key: localStorage.getItem("quiz_supabase_key") || "",
@@ -34,6 +34,8 @@ document.addEventListener("alpine:init", () => {
     async init() {
       if (this.url && this.key) {
         await this.connect();
+      } else {
+        this.screen = "connect";
       }
     },
 
@@ -140,6 +142,7 @@ document.addEventListener("alpine:init", () => {
         this.screen = "setup";
       } catch (err) {
         this.connectError = "Could not connect. Please check the URL and key.";
+        this.screen = "connect";
       } finally {
         this.connecting = false;
       }

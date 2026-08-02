@@ -16,6 +16,14 @@
 
   <div id="app" class="min-h-screen flex flex-col" x-data="quizApp()">
 
+    <!-- ===================== LOADING ===================== -->
+    <section x-show="screen === 'loading'" class="screen flex-1 flex items-center justify-center p-6">
+      <div class="text-center">
+        <div class="text-5xl mb-4 animate-bounce">🦉</div>
+        <p class="font-body font-bold text-duo-gray">Loading...</p>
+      </div>
+    </section>
+
     <!-- ===================== SCREEN 1 — CONNECTION ===================== -->
     <section x-show="screen === 'connect'" class="screen flex-1 flex items-center justify-center p-6">
       <div class="w-full max-w-md">
