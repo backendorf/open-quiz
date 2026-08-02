@@ -185,6 +185,35 @@ body {
   outline-offset: 2px;
 }
 
+/* ---------- Report button ---------- */
+.duo-report-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: var(--duo-gray);
+  background: none;
+  border: 2px solid var(--duo-border);
+  border-radius: 10px;
+  padding: 0.45rem 0.75rem;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.duo-report-btn:hover:not(:disabled) {
+  border-color: var(--duo-red);
+  color: var(--duo-red);
+}
+.duo-report-btn:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+.duo-report-btn:focus-visible {
+  outline: 2px solid var(--duo-red);
+  outline-offset: 2px;
+}
+
 /* ---------- Answer options ---------- */
 .duo-option {
   display: flex;

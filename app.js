@@ -1,14 +1,14 @@
 // ============================================================
-// Quiz AD0-E727 — componente Alpine.js
+// Quiz AD0-E727 — Alpine.js component
 // ============================================================
 
-const CATEGORIAS_META = {
-  "page-builder": { nome: "Admin & Page Builder", emoji: "🧩" },
-  "styles": { nome: "Styles (LESS)", emoji: "🎨" },
-  "layout-xml-templates": { nome: "Layout XML & Templates", emoji: "🧱" },
-  "theme-management": { nome: "Theme Management", emoji: "🖼️" },
-  "javascript": { nome: "JavaScript", emoji: "⚡" },
-  "tools-cli-grunt": { nome: "Tools (CLI & Grunt)", emoji: "🛠️" },
+const CATEGORIES_META = {
+  "page-builder": { name: "Admin & Page Builder", emoji: "🧩" },
+  "styles": { name: "Styles (LESS)", emoji: "🎨" },
+  "layout-xml-templates": { name: "Layout XML & Templates", emoji: "🧱" },
+  "theme-management": { name: "Theme Management", emoji: "🖼️" },
+  "javascript": { name: "JavaScript", emoji: "⚡" },
+  "tools-cli-grunt": { name: "Tools (CLI & Grunt)", emoji: "🛠️" },
 };
 
 function shuffle(array) {
@@ -22,7 +22,7 @@ function shuffle(array) {
 
 document.addEventListener("alpine:init", () => {
   Alpine.data("quizApp", () => ({
-    // ---------- estado ----------
+    // ---------- state ----------
     screen: "connect", // connect | setup | quiz | results
 
     url: "",
@@ -31,143 +31,147 @@ document.addEventListener("alpine:init", () => {
     connectError: "",
     supabaseClient: null,
 
-    categoriaRows: [],       // [{id, slug, nome}]
-    selecionadas: [],        // slugs marcados
-    qtdDesejada: 10,
-    qtdDisponivel: 0,
+    categoryRows: [],        // [{id, slug, nome}]
+    selected: [],            // checked slugs
+    desiredQty: 10,
+    availableQty: 0,
     setupError: "",
     loadingQuiz: false,
 
-    perguntas: [],
-    indiceAtual: 0,
-    respostaAtual: [],
-    verificado: false,
-    simuladoNumero: null,
-    respostas: [],           // {questao, resposta, acertou}[]
+    questions: [],
+    currentIndex: 0,
+    currentAnswer: [],
+    checked: false,
+    quizNumber: null,
+    answers: [],             // {question, answer, correct}[]
     reviewOpen: false,
 
-    // ---------- getters (computados) ----------
-    get perguntaAtual() {
-      return this.perguntas[this.indiceAtual] || null;
+    // report
+    reportSending: false,
+    reportSent: false,
+
+    // ---------- getters ----------
+    get currentQuestion() {
+      return this.questions[this.currentIndex] || null;
     },
-    get progressoPct() {
-      return this.perguntas.length ? (this.indiceAtual / this.perguntas.length) * 100 : 0;
+    get progressPct() {
+      return this.questions.length ? (this.currentIndex / this.questions.length) * 100 : 0;
     },
-    get rotuloTipo() {
-      const q = this.perguntaAtual;
+    get typeLabel() {
+      const q = this.currentQuestion;
       if (!q) return "";
-      if (q.tipo === "multiple_choice") return "Múltipla escolha";
-      if (q.tipo === "scenario") return "Cenário";
-      return this.categoriaNome(q.categoria_id);
+      if (q.tipo === "multiple_choice") return "Multiple choice";
+      if (q.tipo === "scenario") return "Scenario";
+      return this.categoryName(q.categoria_id);
     },
-    get ultimaResposta() {
-      return this.respostas[this.respostas.length - 1] || null;
+    get lastAnswer() {
+      return this.answers[this.answers.length - 1] || null;
     },
-    get totalAcertos() {
-      return this.respostas.filter((r) => r.acertou).length;
+    get totalCorrect() {
+      return this.answers.filter((r) => r.correct).length;
     },
     get scorePct() {
-      return this.respostas.length
-        ? Math.round((this.totalAcertos / this.respostas.length) * 100)
+      return this.answers.length
+        ? Math.round((this.totalCorrect / this.answers.length) * 100)
         : 0;
     },
-    get desempenhoPorCategoria() {
-      const porCategoria = {};
-      this.respostas.forEach((r) => {
-        const nome = this.categoriaNome(r.questao.categoria_id) || "Outra";
-        if (!porCategoria[nome]) porCategoria[nome] = { acertos: 0, total: 0 };
-        porCategoria[nome].total += 1;
-        if (r.acertou) porCategoria[nome].acertos += 1;
+    get performanceByCategory() {
+      const byCategory = {};
+      this.answers.forEach((r) => {
+        const name = this.categoryName(r.question.categoria_id) || "Other";
+        if (!byCategory[name]) byCategory[name] = { correct: 0, total: 0 };
+        byCategory[name].total += 1;
+        if (r.correct) byCategory[name].correct += 1;
       });
-      return Object.entries(porCategoria).map(([nome, v]) => {
-        const pct = Math.round((v.acertos / v.total) * 100);
-        const cor = pct >= 70 ? "var(--duo-green)" : pct >= 40 ? "var(--duo-yellow)" : "var(--duo-red)";
-        return { nome, acertos: v.acertos, total: v.total, pct, cor };
+      return Object.entries(byCategory).map(([name, v]) => {
+        const pct = Math.round((v.correct / v.total) * 100);
+        const color = pct >= 70 ? "var(--duo-green)" : pct >= 40 ? "var(--duo-yellow)" : "var(--duo-red)";
+        return { name, correct: v.correct, total: v.total, pct, color };
       });
     },
 
     // ---------- helpers ----------
-    metaCategoria(slug) {
-      return CATEGORIAS_META[slug] || { nome: slug, emoji: "📘" };
+    categoryMeta(slug) {
+      return CATEGORIES_META[slug] || { name: slug, emoji: "📘" };
     },
-    categoriaNome(categoriaId) {
-      const cat = this.categoriaRows.find((c) => c.id === categoriaId);
+    categoryName(categoryId) {
+      const cat = this.categoryRows.find((c) => c.id === categoryId);
       if (!cat) return "";
-      return this.metaCategoria(cat.slug).nome;
+      return this.categoryMeta(cat.slug).name;
     },
-    letraDoIndice(idx) {
+    letterFromIndex(idx) {
       return ["a", "b", "c", "d", "e", "f"][idx];
     },
-    classeOpcao(letra) {
-      if (!this.verificado) {
-        return this.respostaAtual.includes(letra) ? "selected" : "";
+    optionClass(letter) {
+      if (!this.checked) {
+        return this.currentAnswer.includes(letter) ? "selected" : "";
       }
-      const q = this.perguntaAtual;
-      const correta = q.resposta_correta.map((l) => l.toLowerCase());
-      if (correta.includes(letra)) return "correct";
-      if (this.respostaAtual.includes(letra)) return "incorrect";
+      const q = this.currentQuestion;
+      const correct = q.resposta_correta.map((l) => l.toLowerCase());
+      if (correct.includes(letter)) return "correct";
+      if (this.currentAnswer.includes(letter)) return "incorrect";
       return "";
     },
 
-    // ---------- TELA 1: conexão ----------
-    async conectar() {
+    // ---------- SCREEN 1: connection ----------
+    async connect() {
       this.connectError = "";
       this.connecting = true;
       try {
         const client = supabase.createClient(this.url, this.key);
         const { data, error } = await client.from("categorias").select("id, slug, nome");
         if (error) throw error;
-        if (!data || data.length === 0) throw new Error("sem categorias");
+        if (!data || data.length === 0) throw new Error("no categories");
 
         this.supabaseClient = client;
-        this.categoriaRows = data;
-        this.selecionadas = data.map((c) => c.slug);
+        this.categoryRows = data;
+        this.selected = data.map((c) => c.slug);
 
-        await this.atualizarQuantidadeDisponivel();
+        await this.updateAvailableCount();
         this.screen = "setup";
       } catch (err) {
-        this.connectError = "Não foi possível conectar. Confira a URL e a chave.";
+        this.connectError = "Could not connect. Please check the URL and key.";
       } finally {
         this.connecting = false;
       }
     },
 
-    // ---------- TELA 2: configuração ----------
-    async atualizarQuantidadeDisponivel() {
-      const ids = this.categoriaRows
-        .filter((c) => this.selecionadas.includes(c.slug))
+    // ---------- SCREEN 2: setup ----------
+    async updateAvailableCount() {
+      const ids = this.categoryRows
+        .filter((c) => this.selected.includes(c.slug))
         .map((c) => c.id);
 
       if (ids.length === 0) {
-        this.qtdDisponivel = 0;
+        this.availableQty = 0;
       } else {
         const { count, error } = await this.supabaseClient
           .from("questoes")
           .select("id", { count: "exact", head: true })
           .in("categoria_id", ids);
-        this.qtdDisponivel = error ? 0 : count || 0;
+        this.availableQty = error ? 0 : count || 0;
       }
 
-      if (this.qtdDesejada > this.qtdDisponivel) {
-        this.qtdDesejada = Math.max(1, this.qtdDisponivel);
+      if (this.desiredQty > this.availableQty) {
+        this.desiredQty = Math.max(1, this.availableQty);
       }
     },
 
-    async iniciarQuiz() {
+    async startQuiz() {
       this.setupError = "";
 
-      if (this.selecionadas.length === 0) {
-        this.setupError = "Selecione ao menos uma categoria.";
+      if (this.selected.length === 0) {
+        this.setupError = "Select at least one category.";
         return;
       }
-      if (this.qtdDisponivel === 0) {
-        this.setupError = "Não há questões salvas para essas categorias ainda.";
+      if (this.availableQty === 0) {
+        this.setupError = "No questions saved for these categories yet.";
         return;
       }
 
       this.loadingQuiz = true;
-      const ids = this.categoriaRows
-        .filter((c) => this.selecionadas.includes(c.slug))
+      const ids = this.categoryRows
+        .filter((c) => this.selected.includes(c.slug))
         .map((c) => c.id);
 
       const { data, error } = await this.supabaseClient
@@ -178,72 +182,93 @@ document.addEventListener("alpine:init", () => {
       this.loadingQuiz = false;
 
       if (error || !data) {
-        this.setupError = "Erro ao carregar as questões. Tente novamente.";
+        this.setupError = "Error loading questions. Please try again.";
         return;
       }
 
-      this.perguntas = shuffle(data).slice(0, this.qtdDesejada);
-      this.indiceAtual = 0;
-      this.respostaAtual = [];
-      this.verificado = false;
-      this.respostas = [];
+      this.questions = shuffle(data).slice(0, this.desiredQty);
+      this.currentIndex = 0;
+      this.currentAnswer = [];
+      this.checked = false;
+      this.answers = [];
       this.reviewOpen = false;
-      this.simuladoNumero = Math.floor(Math.random() * 900000) + 100000;
+      this.quizNumber = Math.floor(Math.random() * 900000) + 100000;
       this.screen = "quiz";
     },
 
-    // ---------- TELA 3: quiz ----------
-    selecionarOpcao(letra) {
-      if (this.verificado) return;
-      const tipo = this.perguntaAtual.tipo;
+    // ---------- SCREEN 3: quiz ----------
+    selectOption(letter) {
+      if (this.checked) return;
+      const tipo = this.currentQuestion.tipo;
 
       if (tipo === "multiple_choice") {
-        this.respostaAtual = this.respostaAtual.includes(letra)
-          ? this.respostaAtual.filter((l) => l !== letra)
-          : [...this.respostaAtual, letra];
+        this.currentAnswer = this.currentAnswer.includes(letter)
+          ? this.currentAnswer.filter((l) => l !== letter)
+          : [...this.currentAnswer, letter];
       } else {
-        this.respostaAtual = [letra];
+        this.currentAnswer = [letter];
       }
     },
 
-    async verificarResposta() {
-      const q = this.perguntaAtual;
-      const correta = [...q.resposta_correta].map((l) => l.toLowerCase()).sort();
-      const dada = [...this.respostaAtual].sort();
-      const acertou = JSON.stringify(correta) === JSON.stringify(dada);
+    async checkAnswer() {
+      const q = this.currentQuestion;
+      const correct = [...q.resposta_correta].map((l) => l.toLowerCase()).sort();
+      const given = [...this.currentAnswer].sort();
+      const isCorrect = JSON.stringify(correct) === JSON.stringify(given);
 
-      this.verificado = true;
-      this.respostas.push({ questao: q, resposta: dada, acertou });
+      this.checked = true;
+      this.answers.push({ question: q, answer: given, correct: isCorrect });
 
-      // grava a tentativa no Supabase (mesmo esquema usado pelo notebook)
+      // save attempt to Supabase
       this.supabaseClient
         .from("tentativas")
         .insert({
           questao_id: q.id,
-          simulado_numero: this.simuladoNumero,
-          acertou,
+          simulado_numero: this.quizNumber,
+          acertou: isCorrect,
         })
         .then(() => {});
     },
 
-    proximaQuestao() {
-      if (this.indiceAtual < this.perguntas.length - 1) {
-        this.indiceAtual += 1;
-        this.respostaAtual = [];
-        this.verificado = false;
+    nextQuestion() {
+      if (this.currentIndex < this.questions.length - 1) {
+        this.currentIndex += 1;
+        this.currentAnswer = [];
+        this.checked = false;
+        this.reportSent = false;
       } else {
         this.screen = "results";
       }
     },
 
-    sairDoQuiz() {
-      if (confirm("Sair do quiz? Seu progresso nesta rodada será perdido.")) {
+    async reportQuestion() {
+      const q = this.currentQuestion;
+      if (!q || this.reportSending || this.reportSent) return;
+
+      this.reportSending = true;
+      try {
+        await this.supabaseClient.rpc("incrementar_reports", { questao_id_param: q.id });
+        this.reportSent = true;
+      } catch (e) {
+        // fallback: direct update
+        await this.supabaseClient
+          .from("questoes")
+          .update({ reports: (q.reports || 0) + 1 })
+          .eq("id", q.id);
+        this.reportSent = true;
+      } finally {
+        this.reportSending = false;
+      }
+    },
+
+    exitQuiz() {
+      if (confirm("Exit quiz? Your progress in this round will be lost.")) {
         this.screen = "setup";
       }
     },
 
-    // ---------- TELA 4: resultados ----------
-    voltarParaSetup() {
+    // ---------- SCREEN 4: results ----------
+    backToSetup() {
       this.screen = "setup";
     },
   }));
