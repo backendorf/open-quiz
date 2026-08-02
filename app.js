@@ -252,14 +252,14 @@ document.addEventListener("alpine:init", () => {
 
       this.reportSending = true;
       try {
-        await this.supabaseClient.rpc("incrementar_reports", { questao_id_param: q.id });
-        this.reportSent = true;
-      } catch (e) {
-        // fallback: direct update
-        await this.supabaseClient
+        const { error } = await this.supabaseClient
           .from("questoes")
           .update({ reports: (q.reports || 0) + 1 })
           .eq("id", q.id);
+        if (error) console.error("Report failed:", error);
+        this.reportSent = true;
+      } catch (e) {
+        console.error("Report failed:", e);
         this.reportSent = true;
       } finally {
         this.reportSending = false;
