@@ -115,7 +115,7 @@
           </div>
 
           <!-- Report button -->
-          <div class="mt-4 flex justify-end">
+          <div class="mt-4 flex justify-end" x-show="checked">
             <button type="button" class="duo-report-btn" :disabled="reportSending || reportSent" @click="reportQuestion()" aria-label="Report question">
               <span x-text="reportSent ? '🚩 Reported' : '🚩 Report'"></span>
             </button>

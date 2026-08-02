@@ -148,7 +148,8 @@ document.addEventListener("alpine:init", () => {
         const { count, error } = await this.supabaseClient
           .from("questoes")
           .select("id", { count: "exact", head: true })
-          .in("categoria_id", ids);
+          .in("categoria_id", ids)
+          .or("reports.is.null,reports.eq.0");
         this.availableQty = error ? 0 : count || 0;
       }
 
@@ -177,7 +178,8 @@ document.addEventListener("alpine:init", () => {
       const { data, error } = await this.supabaseClient
         .from("questoes")
         .select("*")
-        .in("categoria_id", ids);
+        .in("categoria_id", ids)
+        .or("reports.is.null,reports.eq.0");
 
       this.loadingQuiz = false;
 
