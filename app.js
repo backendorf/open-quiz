@@ -31,6 +31,12 @@ document.addEventListener("alpine:init", () => {
     connectError: "",
     supabaseClient: null,
 
+    async init() {
+      if (this.url && this.key) {
+        await this.connect();
+      }
+    },
+
     categoryRows: [],        // [{id, slug, nome}]
     selected: [],            // checked slugs
     desiredQty: 10,
