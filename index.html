@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Quiz AD0-E727</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="min-h-screen">
+
+  <div id="app" class="min-h-screen flex flex-col" x-data="quizApp()">
+
+    <!-- ===================== TELA 1 — CONEXÃO ===================== -->
+    <section x-show="screen === 'connect'" class="screen flex-1 flex items-center justify-center p-6">
+      <div class="w-full max-w-md">
+        <div class="text-center mb-8">
+          <div class="text-5xl mb-3">🦉</div>
+          <h1 class="font-display text-3xl text-duo-text mb-2">Quiz AD0-E727</h1>
+          <p class="font-body text-duo-gray">Conecte seu banco de questões pra começar</p>
+        </div>
+
+        <form @submit.prevent="conectar()" class="space-y-4">
+          <div>
+            <label for="input-url" class="block font-body font-bold text-sm text-duo-text mb-1.5">URL do Supabase</label>
+            <input id="input-url" type="url" required placeholder="https://xxxxx.supabase.co"
+              x-model.trim="url" class="duo-input" autocomplete="off">
+          </div>
+          <div>
+            <label for="input-key" class="block font-body font-bold text-sm text-duo-text mb-1.5">Chave (anon / publishable)</label>
+            <input id="input-key" type="password" required placeholder="sb_publishable_..."
+              x-model.trim="key" class="duo-input" autocomplete="off">
+          </div>
+          <p class="font-body text-xs text-duo-gray-light leading-relaxed">
+            Nada é salvo. As chaves ficam só na memória desta aba enquanto você usa o quiz.
+          </p>
+          <button type="submit" class="duo-btn duo-btn-green w-full mt-2" :disabled="connecting">
+            <span x-text="connecting ? 'CONECTANDO...' : 'CONECTAR'"></span>
+          </button>
+          <p x-show="connectError" x-text="connectError" class="font-body font-bold text-sm text-duo-red text-center"></p>
+        </form>
+      </div>
+    </section>
+
+    <!-- ===================== TELA 2 — CONFIGURAÇÃO ===================== -->
+    <section x-show="screen === 'setup'" class="screen flex-1 flex flex-col p-6">
+      <div class="w-full max-w-2xl mx-auto flex-1 flex flex-col">
+        <div class="text-center mb-6 mt-4">
+          <h1 class="font-display text-2xl sm:text-3xl text-duo-text mb-2">Monte seu quiz</h1>
+          <p class="font-body text-duo-gray">Escolha as categorias e quantas questões quer responder</p>
+        </div>
+
+        <div class="mb-6">
+          <h2 class="font-body font-bold text-duo-text mb-3">Categorias</h2>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <template x-for="cat in categoriaRows" :key="cat.id">
+              <label class="duo-chip" :class="{ selected: selecionadas.includes(cat.slug) }">
+                <input type="checkbox" :value="cat.slug" x-model="selecionadas" @change="atualizarQuantidadeDisponivel()">
+                <span class="text-lg" x-text="metaCategoria(cat.slug).emoji"></span>
+                <span x-text="metaCategoria(cat.slug).nome"></span>
+              </label>
+            </template>
+          </div>
+        </div>
+
+        <div class="mb-6">
+          <h2 class="font-body font-bold text-duo-text mb-3">Quantidade de questões</h2>
+          <div class="flex items-center gap-4">
+            <button type="button" class="duo-stepper-btn" aria-label="Diminuir" @click="qtdDesejada = Math.max(1, qtdDesejada - 1)">−</button>
+            <div class="font-display text-3xl text-duo-text w-16 text-center" x-text="qtdDesejada"></div>
+            <button type="button" class="duo-stepper-btn" aria-label="Aumentar" @click="qtdDesejada = Math.min(qtdDisponivel || 1, qtdDesejada + 1)">+</button>
+            <span class="font-body text-sm text-duo-gray-light ml-2" x-text="`de ${qtdDisponivel} disponíveis`"></span>
+          </div>
+        </div>
+
+        <div class="mt-auto pt-4">
+          <p x-show="setupError" x-text="setupError" class="font-body font-bold text-sm text-duo-red text-center mb-3"></p>
+          <button type="button" class="duo-btn duo-btn-green w-full" :disabled="loadingQuiz" @click="iniciarQuiz()">
+            <span x-text="loadingQuiz ? 'CARREGANDO...' : 'COMEÇAR'"></span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== TELA 3 — QUIZ ===================== -->
+    <section x-show="screen === 'quiz'" class="screen flex-1 flex flex-col">
+      <header class="px-6 pt-5 pb-3 flex items-center gap-4">
+        <button type="button" @click="sairDoQuiz()" aria-label="Sair do quiz" class="text-duo-gray-light hover:text-duo-gray text-2xl leading-none font-bold">✕</button>
+        <div class="flex-1 h-4 bg-duo-border rounded-full overflow-hidden">
+          <div class="h-full bg-duo-green rounded-full duo-transition" :style="`width: ${progressoPct}%`"></div>
+        </div>
+        <span class="font-body font-bold text-duo-gray text-sm whitespace-nowrap" x-text="`${indiceAtual + 1}/${perguntas.length}`"></span>
+      </header>
+
+      <div class="flex-1 overflow-y-auto px-6 py-4">
+        <div class="max-w-2xl mx-auto" x-show="perguntaAtual">
+          <p class="font-body font-bold text-xs uppercase tracking-wide text-duo-blue mb-2" x-text="rotuloTipo"></p>
+          <h2 class="font-display text-xl sm:text-2xl text-duo-text mb-6 leading-snug" x-text="perguntaAtual?.enunciado"></h2>
+
+          <div class="space-y-3" role="group" aria-label="Alternativas">
+            <template x-for="(texto, idx) in perguntaAtual?.alternativas || []" :key="idx">
+              <button type="button" class="duo-option w-full"
+                :class="classeOpcao(letraDoIndice(idx))"
+                :disabled="verificado"
+                @click="selecionarOpcao(letraDoIndice(idx))">
+                <span class="duo-option-mark"></span>
+                <span x-text="texto"></span>
+              </button>
+            </template>
+          </div>
+        </div>
+      </div>
+
+      <footer class="duo-action-bar px-6 py-4" :class="{ 'state-correct': verificado && ultimaResposta?.acertou, 'state-incorrect': verificado && ultimaResposta && !ultimaResposta.acertou }">
+        <div class="max-w-2xl mx-auto">
+          <div x-show="verificado" class="mb-3 font-body">
+            <p class="font-display text-lg mb-1" :style="`color: ${ultimaResposta?.acertou ? 'var(--duo-green-dark)' : 'var(--duo-red-dark)'}`" x-text="ultimaResposta?.acertou ? '✅ Certo!' : '❌ Quase!'"></p>
+            <p class="text-sm leading-relaxed" x-text="perguntaAtual?.explicacao || ''"></p>
+          </div>
+          <button type="button" class="duo-btn w-full" :class="verificado ? (ultimaResposta?.acertou ? 'duo-btn-green' : 'duo-btn-red') : 'duo-btn-green'"
+            :disabled="!verificado && respostaAtual.length === 0"
+            @click="verificado ? proximaQuestao() : verificarResposta()">
+            <span x-text="verificado ? (indiceAtual === perguntas.length - 1 ? 'VER RESULTADOS' : 'CONTINUAR') : 'VERIFICAR'"></span>
+          </button>
+        </div>
+      </footer>
+    </section>
+
+    <!-- ===================== TELA 4 — RESULTADOS ===================== -->
+    <section x-show="screen === 'results'" class="screen flex-1 flex flex-col p-6">
+      <div class="w-full max-w-2xl mx-auto flex-1 flex flex-col">
+        <div class="text-center mt-6 mb-8">
+          <div class="text-6xl mb-3" x-text="scorePct >= 80 ? '🏆' : scorePct >= 60 ? '🎉' : '💪'"></div>
+          <h1 class="font-display text-3xl text-duo-text mb-1">Simulado concluído!</h1>
+          <p class="font-body text-duo-gray-light text-sm" x-text="`Simulado #${simuladoNumero} · ${scorePct}%`"></p>
+        </div>
+
+        <div class="duo-card mb-6 text-center py-6">
+          <p class="font-display text-5xl text-duo-green mb-1" x-text="`${totalAcertos}/${respostas.length}`"></p>
+          <p class="font-body text-duo-gray font-bold">acertos</p>
+        </div>
+
+        <div class="mb-6">
+          <h2 class="font-body font-bold text-duo-text mb-3">Desempenho por categoria</h2>
+          <div class="space-y-3">
+            <template x-for="item in desempenhoPorCategoria" :key="item.nome">
+              <div>
+                <div class="flex justify-between items-center mb-1">
+                  <span class="font-body font-bold text-sm text-duo-text" x-text="item.nome"></span>
+                  <span class="font-body font-bold text-sm text-duo-gray" x-text="`${item.acertos}/${item.total}`"></span>
+                </div>
+                <div class="duo-cat-bar-track">
+                  <div class="duo-cat-bar-fill" :style="`width:${item.pct}%; background:${item.cor};`"></div>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+
+        <div class="mb-6">
+          <button type="button" class="font-body font-bold text-duo-blue text-sm" @click="reviewOpen = !reviewOpen">
+            <span x-text="reviewOpen ? 'Ocultar revisão ▴' : 'Ver revisão completa ▾'"></span>
+          </button>
+          <div x-show="reviewOpen" class="mt-4 space-y-4">
+            <template x-for="(r, i) in respostas" :key="i">
+              <div class="duo-card">
+                <p class="font-body font-bold text-sm text-duo-gray-light mb-1" x-text="`Questão ${i + 1} ${r.acertou ? '✅' : '❌'}`"></p>
+                <p class="font-body font-bold text-duo-text mb-2" x-text="r.questao.enunciado"></p>
+                <p class="font-body text-sm text-duo-gray mb-1">
+                  Sua resposta: <strong x-text="r.resposta.join(', ') || '—'"></strong> ·
+                  Correta: <strong x-text="r.questao.resposta_correta.join(', ')"></strong>
+                </p>
+                <p class="font-body text-sm text-duo-gray-light" x-text="r.questao.explicacao || ''"></p>
+              </div>
+            </template>
+          </div>
+        </div>
+
+        <div class="mt-auto pt-4 flex flex-col gap-3">
+          <button type="button" class="duo-btn duo-btn-blue w-full" @click="voltarParaSetup()">NOVO QUIZ</button>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

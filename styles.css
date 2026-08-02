@@ -1,0 +1,282 @@
+:root {
+  --duo-green: #58cc02;
+  --duo-green-dark: #4caf00;
+  --duo-blue: #1cb0f6;
+  --duo-blue-dark: #1899d6;
+  --duo-red: #ff4b4b;
+  --duo-red-dark: #ea2b2b;
+  --duo-yellow: #ffc800;
+  --duo-text: #3c3c3c;
+  --duo-gray: #777777;
+  --duo-gray-light: #afafaf;
+  --duo-border: #e5e5e5;
+  --duo-bg: #f7f7f7;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--duo-bg);
+  font-family: "Nunito", sans-serif;
+  color: var(--duo-text);
+}
+
+.font-display {
+  font-family: "Baloo 2", sans-serif;
+  font-weight: 700;
+}
+
+.font-body {
+  font-family: "Nunito", sans-serif;
+}
+
+.text-duo-text { color: var(--duo-text); }
+.text-duo-gray { color: var(--duo-gray); }
+.text-duo-gray-light { color: var(--duo-gray-light); }
+.text-duo-green { color: var(--duo-green); }
+.text-duo-blue { color: var(--duo-blue); }
+.text-duo-red { color: var(--duo-red); }
+.bg-duo-green { background-color: var(--duo-green); }
+.bg-duo-border { background-color: var(--duo-border); }
+
+.duo-transition {
+  transition: width 0.35s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ---------- Inputs ---------- */
+.duo-input {
+  width: 100%;
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--duo-text);
+  background: #ffffff;
+  border: 2px solid var(--duo-border);
+  border-radius: 14px;
+  padding: 0.85rem 1rem;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.duo-input:focus {
+  border-color: var(--duo-blue);
+}
+
+.duo-input:focus-visible {
+  outline: 2px solid var(--duo-blue);
+  outline-offset: 2px;
+}
+
+/* ---------- Chunky 3D buttons (signature element) ---------- */
+.duo-btn {
+  font-family: "Baloo 2", sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  font-size: 1rem;
+  padding: 0.95rem 1.5rem;
+  border-radius: 16px;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.05s ease, box-shadow 0.05s ease, background-color 0.15s ease;
+  color: #ffffff;
+}
+
+.duo-btn:focus-visible {
+  outline: 3px solid var(--duo-blue);
+  outline-offset: 3px;
+}
+
+.duo-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.duo-btn-green {
+  background: var(--duo-green);
+  box-shadow: 0 4px 0 var(--duo-green-dark);
+}
+.duo-btn-green:not(:disabled):hover { background: #63d904; }
+.duo-btn-green:not(:disabled):active {
+  transform: translateY(4px);
+  box-shadow: 0 0 0 var(--duo-green-dark);
+}
+
+.duo-btn-blue {
+  background: var(--duo-blue);
+  box-shadow: 0 4px 0 var(--duo-blue-dark);
+}
+.duo-btn-blue:not(:disabled):hover { background: #29baff; }
+.duo-btn-blue:not(:disabled):active {
+  transform: translateY(4px);
+  box-shadow: 0 0 0 var(--duo-blue-dark);
+}
+
+.duo-btn-red {
+  background: var(--duo-red);
+  box-shadow: 0 4px 0 var(--duo-red-dark);
+}
+
+.duo-btn-gray {
+  background: var(--duo-gray-light);
+  box-shadow: 0 4px 0 #969696;
+}
+
+/* ---------- Stepper ---------- */
+.duo-stepper-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: 2px solid var(--duo-border);
+  background: #ffffff;
+  font-family: "Baloo 2", sans-serif;
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--duo-text);
+  cursor: pointer;
+  transition: border-color 0.15s ease, transform 0.05s ease;
+}
+.duo-stepper-btn:hover { border-color: var(--duo-blue); }
+.duo-stepper-btn:active { transform: scale(0.95); }
+.duo-stepper-btn:focus-visible {
+  outline: 2px solid var(--duo-blue);
+  outline-offset: 2px;
+}
+
+/* ---------- Category chips ---------- */
+.duo-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 0.9rem;
+  border: 2px solid var(--duo-border);
+  border-radius: 14px;
+  background: #ffffff;
+  cursor: pointer;
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--duo-text);
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+  user-select: none;
+}
+.duo-chip:hover { border-color: var(--duo-blue); }
+.duo-chip.selected {
+  border-color: var(--duo-blue);
+  background: #e7f7ff;
+  color: var(--duo-blue-dark);
+}
+.duo-chip input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.duo-chip:focus-within {
+  outline: 2px solid var(--duo-blue);
+  outline-offset: 2px;
+}
+
+/* ---------- Answer options ---------- */
+.duo-option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  text-align: left;
+  padding: 0.9rem 1.1rem;
+  border: 2px solid var(--duo-border);
+  border-radius: 14px;
+  background: #ffffff;
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--duo-text);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.05s ease;
+}
+.duo-option:hover:not(:disabled) { border-color: var(--duo-blue-dark); background: #f0faff; }
+.duo-option:active:not(:disabled) { transform: scale(0.99); }
+.duo-option:focus-visible {
+  outline: 2px solid var(--duo-blue);
+  outline-offset: 2px;
+}
+.duo-option:disabled { cursor: default; }
+
+.duo-option.selected {
+  border-color: var(--duo-blue);
+  background: #e7f7ff;
+  color: var(--duo-blue-dark);
+}
+.duo-option.correct {
+  border-color: var(--duo-green);
+  background: #ecfce2;
+  color: var(--duo-green-dark);
+}
+.duo-option.incorrect {
+  border-color: var(--duo-red);
+  background: #ffeaea;
+  color: var(--duo-red-dark);
+}
+
+.duo-option-mark {
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  border: 2px solid var(--duo-border);
+  flex-shrink: 0;
+}
+.duo-option.selected .duo-option-mark { border-color: var(--duo-blue); background: var(--duo-blue); }
+.duo-option.correct .duo-option-mark { border-color: var(--duo-green); background: var(--duo-green); }
+.duo-option.incorrect .duo-option-mark { border-color: var(--duo-red); background: var(--duo-red); }
+
+/* ---------- Action bar (signature element) ---------- */
+.duo-action-bar {
+  border-top: 2px solid var(--duo-border);
+  background: #ffffff;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+.duo-action-bar.state-correct {
+  background: #d7ffb8;
+  border-top-color: #d7ffb8;
+}
+.duo-action-bar.state-incorrect {
+  background: #ffdfe0;
+  border-top-color: #ffdfe0;
+}
+
+/* ---------- Cards ---------- */
+.duo-card {
+  background: #ffffff;
+  border: 2px solid var(--duo-border);
+  border-radius: 18px;
+  padding: 1.25rem;
+}
+
+/* ---------- Category result bar ---------- */
+.duo-cat-bar-track {
+  height: 10px;
+  border-radius: 999px;
+  background: var(--duo-border);
+  overflow: hidden;
+}
+.duo-cat-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+}
+
+.screen {
+  animation: duo-fade-in 0.25s ease;
+}
+@keyframes duo-fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
