@@ -25,8 +25,8 @@ document.addEventListener("alpine:init", () => {
     // ---------- state ----------
     screen: "connect", // connect | setup | quiz | results
 
-    url: "",
-    key: "",
+    url: localStorage.getItem("quiz_supabase_url") || "",
+    key: localStorage.getItem("quiz_supabase_key") || "",
     connecting: false,
     connectError: "",
     supabaseClient: null,
@@ -126,6 +126,9 @@ document.addEventListener("alpine:init", () => {
         this.supabaseClient = client;
         this.categoryRows = data;
         this.selected = data.map((c) => c.slug);
+
+        localStorage.setItem("quiz_supabase_url", this.url);
+        localStorage.setItem("quiz_supabase_key", this.key);
 
         await this.updateAvailableCount();
         this.screen = "setup";
