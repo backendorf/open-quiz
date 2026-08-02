@@ -63,7 +63,7 @@ document.addEventListener("alpine:init", () => {
       return this.questions[this.currentIndex] || null;
     },
     get progressPct() {
-      return this.questions.length ? (this.currentIndex / this.questions.length) * 100 : 0;
+      return this.questions.length ? ((this.currentIndex + 1) / this.questions.length) * 100 : 0;
     },
     get typeLabel() {
       const q = this.currentQuestion;
