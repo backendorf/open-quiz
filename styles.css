@@ -146,11 +146,7 @@ body {
 }
 .duo-qty-chip:hover:not(:disabled) {
   border-color: var(--duo-blue);
-}
-.duo-qty-chip.selected {
-  border-color: var(--duo-blue);
-  background: var(--duo-blue);
-  color: #ffffff;
+  background: #f0faff;
 }
 .duo-qty-chip:disabled {
   opacity: 0.35;
