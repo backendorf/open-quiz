@@ -53,7 +53,6 @@ document.addEventListener("alpine:init", () => {
     quizNumber: null,
     answers: [],             // {question, answer, correct}[]
     reviewOpen: false,
-    retryMode: false,
 
     // stats
     stats: {
@@ -79,10 +78,9 @@ document.addEventListener("alpine:init", () => {
     get typeLabel() {
       const q = this.currentQuestion;
       if (!q) return "";
-      const prefix = this.retryMode ? "🔄 Retry · " : "";
-      if (q.tipo === "multiple_choice") return prefix + "Multiple choice";
-      if (q.tipo === "scenario") return prefix + "Scenario";
-      return prefix + this.categoryName(q.categoria_id);
+      if (q.tipo === "multiple_choice") return "Multiple choice";
+      if (q.tipo === "scenario") return "Scenario";
+      return this.categoryName(q.categoria_id);
     },
     get lastAnswer() {
       return this.answers[this.answers.length - 1] || null;
@@ -288,7 +286,6 @@ document.addEventListener("alpine:init", () => {
       this.checked = false;
       this.answers = [];
       this.reviewOpen = false;
-      this.retryMode = false;
       this.quizNumber = Math.floor(Math.random() * 900000) + 100000;
       this.screen = "quiz";
     },
@@ -314,20 +311,17 @@ document.addEventListener("alpine:init", () => {
       const isCorrect = JSON.stringify(correct) === JSON.stringify(given);
 
       this.checked = true;
+      this.answers.push({ question: q, answer: given, correct: isCorrect });
 
-      if (!this.retryMode) {
-        this.answers.push({ question: q, answer: given, correct: isCorrect });
-
-        // save attempt to Supabase
-        this.supabaseClient
-          .from("tentativas")
-          .insert({
-            questao_id: q.id,
-            simulado_numero: this.quizNumber,
-            acertou: isCorrect,
-          })
-          .then(() => {});
-      }
+      // save attempt to Supabase
+      this.supabaseClient
+        .from("tentativas")
+        .insert({
+          questao_id: q.id,
+          simulado_numero: this.quizNumber,
+          acertou: isCorrect,
+        })
+        .then(() => {});
     },
 
     nextQuestion() {
@@ -336,19 +330,6 @@ document.addEventListener("alpine:init", () => {
         this.currentAnswer = [];
         this.checked = false;
         this.reportSent = false;
-      } else if (!this.retryMode) {
-        // check if there are wrong answers to retry
-        const wrong = this.answers.filter((a) => !a.correct);
-        if (wrong.length > 0) {
-          this.retryMode = true;
-          this.questions = shuffle(wrong.map((a) => a.question));
-          this.currentIndex = 0;
-          this.currentAnswer = [];
-          this.checked = false;
-          this.reportSent = false;
-        } else {
-          this.screen = "results";
-        }
       } else {
         this.screen = "results";
       }
