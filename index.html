@@ -78,17 +78,12 @@
 
         <div class="mb-6">
           <h2 class="font-body font-bold text-duo-text mb-3">Number of questions</h2>
-          <div class="flex flex-wrap gap-2 mb-3">
-            <template x-for="qty in [5, 10, 15, 20, 30]" :key="qty">
-              <button type="button" class="duo-qty-chip" :class="{ selected: desiredQty === qty }" :disabled="qty > availableQty" @click="desiredQty = qty" x-text="qty"></button>
+          <div class="flex items-center gap-2 overflow-x-auto pb-2">
+            <template x-for="qty in [5, 10, 15, 20, 25, 30, 40, 50]" :key="qty">
+              <button type="button" class="duo-qty-chip" :class="{ selected: desiredQty >= qty }" :disabled="qty > availableQty" @click="desiredQty = qty" x-text="qty"></button>
             </template>
           </div>
-          <div class="flex items-center gap-4">
-            <button type="button" class="duo-stepper-btn" aria-label="Decrease" @click="desiredQty = Math.max(1, desiredQty - 1)">−</button>
-            <div class="font-display text-3xl text-duo-text w-16 text-center" x-text="desiredQty"></div>
-            <button type="button" class="duo-stepper-btn" aria-label="Increase" @click="desiredQty = Math.min(availableQty || 1, desiredQty + 1)">+</button>
-            <span class="font-body text-sm text-duo-gray-light ml-2" x-text="`of ${availableQty} available`"></span>
-          </div>
+          <p class="font-body text-sm text-duo-gray-light mt-2" x-text="`${desiredQty} of ${availableQty} available`"></p>
         </div>
 
         <div class="mt-auto pt-4">
