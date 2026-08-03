@@ -41,7 +41,7 @@ document.addEventListener("alpine:init", () => {
 
     categoryRows: [],        // [{id, slug, nome}]
     selected: [],            // checked slugs
-    desiredQty: 10,
+    desiredQty: 5,
     availableQty: 0,
     setupError: "",
     loadingQuiz: false,
