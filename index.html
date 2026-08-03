@@ -57,7 +57,7 @@
 
     <!-- ===================== SCREEN 2 — SETUP ===================== -->
     <section x-show="screen === 'setup'" class="screen flex-1 flex flex-col p-6">
-      <div class="w-full max-w-5xl mx-auto flex-1 flex flex-col">
+      <div class="w-full max-w-6xl mx-auto flex-1 flex flex-col">
         <div class="text-center mb-8 mt-4">
           <h1 class="font-display text-2xl sm:text-3xl text-duo-text mb-1">Build your quiz</h1>
           <p class="font-body text-duo-gray text-sm">Choose categories and how many questions you want</p>
@@ -65,8 +65,30 @@
 
         <div class="flex-1 flex flex-col lg:flex-row gap-6">
 
+          <!-- Left sidebar: Tips & Info -->
+          <aside class="w-full lg:w-64 flex-shrink-0 order-2 lg:order-1">
+            <div class="duo-card sticky top-6">
+              <h2 class="font-body font-bold text-duo-text mb-3">💡 Tips</h2>
+              <ul class="space-y-3 font-body text-sm text-duo-gray">
+                <li>🎯 Unanswered questions are prioritized</li>
+                <li>🚩 Report broken questions to remove them</li>
+                <li>📈 Track your accuracy per category</li>
+                <li>🔄 Mix categories for a realistic exam</li>
+              </ul>
+              <hr class="my-4 border-duo-border">
+              <div>
+                <p class="font-body font-bold text-xs text-duo-gray uppercase tracking-wide mb-2">Exam info</p>
+                <ul class="space-y-1 font-body text-xs text-duo-gray">
+                  <li>⏱ 120 minutes</li>
+                  <li>📝 ~50 questions</li>
+                  <li>✅ Passing score: 68%</li>
+                </ul>
+              </div>
+            </div>
+          </aside>
+
           <!-- Main content -->
-          <div class="flex-1 flex flex-col items-center">
+          <div class="flex-1 flex flex-col items-center order-1 lg:order-2">
             <!-- Categories -->
             <div class="mb-6 w-full max-w-lg">
               <h2 class="font-body font-bold text-duo-text mb-3">Categories</h2>
@@ -103,8 +125,8 @@
             </div>
           </div>
 
-          <!-- Sidebar: Stats -->
-          <aside class="w-full lg:w-72 flex-shrink-0" x-show="stats.totalQuestions > 0">
+          <!-- Right sidebar: Stats -->
+          <aside class="w-full lg:w-72 flex-shrink-0 order-3" x-show="stats.totalQuestions > 0">
             <div class="duo-card sticky top-6">
               <h2 class="font-body font-bold text-duo-text mb-4">📊 Your stats</h2>
 
