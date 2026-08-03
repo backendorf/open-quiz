@@ -200,7 +200,19 @@ document.addEventListener("alpine:init", () => {
         return;
       }
 
-      this.questions = shuffle(data).slice(0, this.desiredQty);
+      // fetch IDs of already answered questions
+      const { data: attempts } = await this.supabaseClient
+        .from("tentativas")
+        .select("questao_id");
+
+      const answeredIds = new Set((attempts || []).map((a) => a.questao_id));
+
+      // prioritize unanswered questions
+      const unanswered = shuffle(data.filter((q) => !answeredIds.has(q.id)));
+      const answered = shuffle(data.filter((q) => answeredIds.has(q.id)));
+      const prioritized = [...unanswered, ...answered];
+
+      this.questions = prioritized.slice(0, this.desiredQty);
       this.currentIndex = 0;
       this.currentAnswer = [];
       this.checked = false;
