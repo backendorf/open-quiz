@@ -130,6 +130,37 @@ body {
   box-shadow: 0 4px 0 #969696;
 }
 
+/* ---------- Quantity chips ---------- */
+.duo-qty-chip {
+  font-family: "Baloo 2", sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  min-width: 44px;
+  padding: 0.5rem 0.75rem;
+  border-radius: 12px;
+  border: 2px solid var(--duo-border);
+  background: #ffffff;
+  color: var(--duo-text);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+.duo-qty-chip:hover:not(:disabled) {
+  border-color: var(--duo-blue);
+}
+.duo-qty-chip.selected {
+  border-color: var(--duo-blue);
+  background: var(--duo-blue);
+  color: #ffffff;
+}
+.duo-qty-chip:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.duo-qty-chip:focus-visible {
+  outline: 2px solid var(--duo-blue);
+  outline-offset: 2px;
+}
+
 /* ---------- Stepper ---------- */
 .duo-stepper-btn {
   width: 44px;
