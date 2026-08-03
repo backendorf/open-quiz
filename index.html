@@ -66,9 +66,9 @@
         <div class="flex-1 flex flex-col lg:flex-row gap-6">
 
           <!-- Main content -->
-          <div class="flex-1 flex flex-col">
+          <div class="flex-1 flex flex-col items-center">
             <!-- Categories -->
-            <div class="mb-6">
+            <div class="mb-6 w-full max-w-lg">
               <h2 class="font-body font-bold text-duo-text mb-3">Categories</h2>
               <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 <template x-for="cat in categoryRows" :key="cat.id">
@@ -82,7 +82,7 @@
             </div>
 
             <!-- Quantity -->
-            <div class="mb-6">
+            <div class="mb-6 w-full max-w-lg">
               <h2 class="font-body font-bold text-duo-text mb-3">Number of questions</h2>
               <div class="font-display text-4xl text-duo-text text-center mb-3" x-text="desiredQty"></div>
               <div class="flex items-center justify-center gap-2 overflow-x-auto pb-2">
@@ -95,7 +95,7 @@
             </div>
 
             <!-- Start button -->
-            <div class="mt-auto pt-4">
+            <div class="mt-auto pt-4 w-full max-w-lg">
               <p x-show="setupError" x-text="setupError" class="font-body font-bold text-sm text-duo-red text-center mb-3"></p>
               <button type="button" class="duo-btn duo-btn-green w-full" :disabled="loadingQuiz" @click="startQuiz()">
                 <span x-text="loadingQuiz ? 'LOADING...' : 'START'"></span>
