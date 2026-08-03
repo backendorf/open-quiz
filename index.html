@@ -57,94 +57,103 @@
 
     <!-- ===================== SCREEN 2 — SETUP ===================== -->
     <section x-show="screen === 'setup'" class="screen flex-1 flex flex-col p-6">
-      <div class="w-full max-w-2xl mx-auto flex-1 flex flex-col">
+      <div class="w-full max-w-5xl mx-auto flex-1 flex flex-col">
         <div class="text-center mb-8 mt-4">
           <h1 class="font-display text-2xl sm:text-3xl text-duo-text mb-1">Build your quiz</h1>
           <p class="font-body text-duo-gray text-sm">Choose categories and how many questions you want</p>
         </div>
 
-        <!-- Stats section -->
-        <div class="mb-8 duo-card" x-show="stats.totalQuestions > 0">
-          <h2 class="font-body font-bold text-duo-text mb-4">📊 Your stats</h2>
+        <div class="flex-1 flex flex-col lg:flex-row gap-6">
 
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5">
-            <div class="text-center">
-              <p class="font-display text-2xl text-duo-blue" x-text="`${stats.coveragePct}%`"></p>
-              <p class="font-body text-xs text-duo-gray">Coverage</p>
+          <!-- Main content -->
+          <div class="flex-1 flex flex-col">
+            <!-- Categories -->
+            <div class="mb-6">
+              <h2 class="font-body font-bold text-duo-text mb-3">Categories</h2>
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                <template x-for="cat in categoryRows" :key="cat.id">
+                  <label class="duo-chip" :class="{ selected: selected.includes(cat.slug) }">
+                    <input type="checkbox" :value="cat.slug" x-model="selected" @change="updateAvailableCount()">
+                    <span class="text-lg" x-text="categoryMeta(cat.slug).emoji"></span>
+                    <span x-text="categoryMeta(cat.slug).name"></span>
+                  </label>
+                </template>
+              </div>
             </div>
-            <div class="text-center">
-              <p class="font-display text-2xl" :class="stats.accuracyPct >= 70 ? 'text-duo-green' : 'text-duo-red'" x-text="`${stats.accuracyPct}%`"></p>
-              <p class="font-body text-xs text-duo-gray">Accuracy</p>
+
+            <!-- Quantity -->
+            <div class="mb-6">
+              <h2 class="font-body font-bold text-duo-text mb-3">Number of questions</h2>
+              <div class="font-display text-4xl text-duo-text text-center mb-3" x-text="desiredQty"></div>
+              <div class="flex items-center justify-center gap-2 overflow-x-auto pb-2">
+                <button type="button" class="duo-qty-chip duo-qty-reset" @click="desiredQty = 5" :disabled="desiredQty <= 5">↺</button>
+                <template x-for="qty in [5, 10, 15, 20, 25, 30, 40, 50]" :key="qty">
+                  <button type="button" class="duo-qty-chip" :disabled="desiredQty + qty > availableQty" @click="desiredQty = Math.min(desiredQty + qty, availableQty)" x-text="`+${qty}`"></button>
+                </template>
+              </div>
+              <p class="font-body text-sm text-duo-gray-light text-center mt-2" x-text="`of ${availableQty} available`"></p>
             </div>
-            <div class="text-center">
-              <p class="font-display text-2xl text-duo-text" x-text="stats.quizzesTaken"></p>
-              <p class="font-body text-xs text-duo-gray">Quizzes done</p>
+
+            <!-- Start button -->
+            <div class="mt-auto pt-4">
+              <p x-show="setupError" x-text="setupError" class="font-body font-bold text-sm text-duo-red text-center mb-3"></p>
+              <button type="button" class="duo-btn duo-btn-green w-full" :disabled="loadingQuiz" @click="startQuiz()">
+                <span x-text="loadingQuiz ? 'LOADING...' : 'START'"></span>
+              </button>
             </div>
           </div>
 
-          <!-- Overall progress bar -->
-          <div class="mb-3">
-            <div class="flex justify-between items-center mb-1">
-              <span class="font-body text-xs text-duo-gray">Questions answered</span>
-              <span class="font-body text-xs text-duo-gray" x-text="`${stats.totalAnswered} / ${stats.totalQuestions}`"></span>
-            </div>
-            <div class="duo-cat-bar-track">
-              <div class="duo-cat-bar-fill" :style="`width:${stats.coveragePct}%; background:var(--duo-blue);`"></div>
-            </div>
-          </div>
+          <!-- Sidebar: Stats -->
+          <aside class="w-full lg:w-72 flex-shrink-0" x-show="stats.totalQuestions > 0">
+            <div class="duo-card sticky top-6">
+              <h2 class="font-body font-bold text-duo-text mb-4">📊 Your stats</h2>
 
-          <!-- Per category -->
-          <div x-show="stats.byCategory.length > 0" class="mt-4">
-            <p class="font-body font-bold text-xs text-duo-gray uppercase tracking-wide mb-2">By category</p>
-            <div class="space-y-2">
-              <template x-for="cat in stats.byCategory" :key="cat.name">
-                <div>
-                  <div class="flex justify-between items-center mb-1">
-                    <span class="font-body text-sm text-duo-text" x-text="cat.name"></span>
-                    <span class="font-body text-xs text-duo-gray" x-text="`${cat.pct}%`"></span>
-                  </div>
-                  <div class="duo-cat-bar-track">
-                    <div class="duo-cat-bar-fill" :style="`width:${cat.pct}%; background:${cat.color};`"></div>
-                  </div>
+              <div class="grid grid-cols-3 gap-2 mb-5">
+                <div class="text-center">
+                  <p class="font-display text-xl text-duo-blue" x-text="`${stats.coveragePct}%`"></p>
+                  <p class="font-body text-xs text-duo-gray">Coverage</p>
                 </div>
-              </template>
+                <div class="text-center">
+                  <p class="font-display text-xl" :class="stats.accuracyPct >= 70 ? 'text-duo-green' : 'text-duo-red'" x-text="`${stats.accuracyPct}%`"></p>
+                  <p class="font-body text-xs text-duo-gray">Accuracy</p>
+                </div>
+                <div class="text-center">
+                  <p class="font-display text-xl text-duo-text" x-text="stats.quizzesTaken"></p>
+                  <p class="font-body text-xs text-duo-gray">Quizzes</p>
+                </div>
+              </div>
+
+              <!-- Overall progress bar -->
+              <div class="mb-4">
+                <div class="flex justify-between items-center mb-1">
+                  <span class="font-body text-xs text-duo-gray">Answered</span>
+                  <span class="font-body text-xs text-duo-gray" x-text="`${stats.totalAnswered} / ${stats.totalQuestions}`"></span>
+                </div>
+                <div class="duo-cat-bar-track">
+                  <div class="duo-cat-bar-fill" :style="`width:${stats.coveragePct}%; background:var(--duo-blue);`"></div>
+                </div>
+              </div>
+
+              <!-- Per category -->
+              <div x-show="stats.byCategory.length > 0">
+                <p class="font-body font-bold text-xs text-duo-gray uppercase tracking-wide mb-2">By category</p>
+                <div class="space-y-2">
+                  <template x-for="cat in stats.byCategory" :key="cat.name">
+                    <div>
+                      <div class="flex justify-between items-center mb-1">
+                        <span class="font-body text-xs text-duo-text" x-text="cat.name"></span>
+                        <span class="font-body text-xs text-duo-gray" x-text="`${cat.pct}%`"></span>
+                      </div>
+                      <div class="duo-cat-bar-track">
+                        <div class="duo-cat-bar-fill" :style="`width:${cat.pct}%; background:${cat.color};`"></div>
+                      </div>
+                    </div>
+                  </template>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+          </aside>
 
-        <!-- Categories -->
-        <div class="mb-6">
-          <h2 class="font-body font-bold text-duo-text mb-3">Categories</h2>
-          <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            <template x-for="cat in categoryRows" :key="cat.id">
-              <label class="duo-chip" :class="{ selected: selected.includes(cat.slug) }">
-                <input type="checkbox" :value="cat.slug" x-model="selected" @change="updateAvailableCount()">
-                <span class="text-lg" x-text="categoryMeta(cat.slug).emoji"></span>
-                <span x-text="categoryMeta(cat.slug).name"></span>
-              </label>
-            </template>
-          </div>
-        </div>
-
-        <!-- Quantity -->
-        <div class="mb-6">
-          <h2 class="font-body font-bold text-duo-text mb-3">Number of questions</h2>
-          <div class="font-display text-4xl text-duo-text text-center mb-3" x-text="desiredQty"></div>
-          <div class="flex items-center justify-center gap-2 overflow-x-auto pb-2">
-            <button type="button" class="duo-qty-chip duo-qty-reset" @click="desiredQty = 5" :disabled="desiredQty <= 5">↺</button>
-            <template x-for="qty in [5, 10, 15, 20, 25, 30, 40, 50]" :key="qty">
-              <button type="button" class="duo-qty-chip" :disabled="desiredQty + qty > availableQty" @click="desiredQty = Math.min(desiredQty + qty, availableQty)" x-text="`+${qty}`"></button>
-            </template>
-          </div>
-          <p class="font-body text-sm text-duo-gray-light text-center mt-2" x-text="`of ${availableQty} available`"></p>
-        </div>
-
-        <!-- Start button -->
-        <div class="mt-auto pt-4">
-          <p x-show="setupError" x-text="setupError" class="font-body font-bold text-sm text-duo-red text-center mb-3"></p>
-          <button type="button" class="duo-btn duo-btn-green w-full" :disabled="loadingQuiz" @click="startQuiz()">
-            <span x-text="loadingQuiz ? 'LOADING...' : 'START'"></span>
-          </button>
         </div>
       </div>
     </section>
