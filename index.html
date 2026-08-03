@@ -117,10 +117,13 @@
             </div>
 
             <!-- Start button -->
-            <div class="mt-auto pt-4 w-full max-w-lg">
+            <div class="mt-auto pt-4 w-full max-w-lg space-y-3">
               <p x-show="setupError" x-text="setupError" class="font-body font-bold text-sm text-duo-red text-center mb-3"></p>
               <button type="button" class="duo-btn duo-btn-green w-full" :disabled="loadingQuiz" @click="startQuiz()">
                 <span x-text="loadingQuiz ? 'LOADING...' : 'START'"></span>
+              </button>
+              <button type="button" class="duo-btn duo-btn-red w-full" :disabled="loadingQuiz || stats.mistakeCount === 0" @click="startReview()">
+                <span x-text="loadingQuiz ? 'LOADING...' : `🔄 REVIEW MISTAKES (${stats.mistakeCount})`"></span>
               </button>
             </div>
           </div>

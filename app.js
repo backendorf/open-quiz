@@ -61,6 +61,7 @@ document.addEventListener("alpine:init", () => {
       coveragePct: 0,
       accuracyPct: 0,
       quizzesTaken: 0,
+      mistakeCount: 0,
       byCategory: [],
     },
 
@@ -190,6 +191,12 @@ document.addEventListener("alpine:init", () => {
       const uniqueQuizzes = new Set(attempts.map((a) => a.simulado_numero));
       this.stats.quizzesTaken = uniqueQuizzes.size;
 
+      // mistakes: questions never answered correctly
+      const correctIds = new Set(attempts.filter((a) => a.acertou).map((a) => a.questao_id));
+      const allAttemptedIds = new Set(attempts.map((a) => a.questao_id));
+      const neverCorrect = [...allAttemptedIds].filter((id) => !correctIds.has(id));
+      this.stats.mistakeCount = neverCorrect.length;
+
       // per category: need question -> category mapping
       const { data: allQuestions } = await this.supabaseClient
         .from("questoes")
@@ -281,6 +288,56 @@ document.addEventListener("alpine:init", () => {
       const prioritized = [...unanswered, ...answered];
 
       this.questions = prioritized.slice(0, this.desiredQty);
+      this.currentIndex = 0;
+      this.currentAnswer = [];
+      this.checked = false;
+      this.answers = [];
+      this.reviewOpen = false;
+      this.quizNumber = Math.floor(Math.random() * 900000) + 100000;
+      this.screen = "quiz";
+    },
+
+    async startReview() {
+      this.setupError = "";
+      this.loadingQuiz = true;
+
+      // get all attempts
+      const { data: attempts } = await this.supabaseClient
+        .from("tentativas")
+        .select("questao_id, acertou");
+
+      if (!attempts || attempts.length === 0) {
+        this.setupError = "No attempts found.";
+        this.loadingQuiz = false;
+        return;
+      }
+
+      // find questions never answered correctly
+      const correctIds = new Set(attempts.filter((a) => a.acertou).map((a) => a.questao_id));
+      const allAttemptedIds = new Set(attempts.map((a) => a.questao_id));
+      const mistakeIds = [...allAttemptedIds].filter((id) => !correctIds.has(id));
+
+      if (mistakeIds.length === 0) {
+        this.setupError = "No mistakes to review!";
+        this.loadingQuiz = false;
+        return;
+      }
+
+      // fetch those questions
+      const { data, error } = await this.supabaseClient
+        .from("questoes")
+        .select("*")
+        .in("id", mistakeIds)
+        .or("reports.is.null,reports.eq.0");
+
+      this.loadingQuiz = false;
+
+      if (error || !data || data.length === 0) {
+        this.setupError = "Error loading review questions.";
+        return;
+      }
+
+      this.questions = shuffle(data);
       this.currentIndex = 0;
       this.currentAnswer = [];
       this.checked = false;
