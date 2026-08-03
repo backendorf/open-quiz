@@ -63,6 +63,59 @@
           <p class="font-body text-duo-gray">Choose categories and how many questions you want</p>
         </div>
 
+        <!-- Stats section -->
+        <div class="mb-6 duo-card" x-show="stats.totalQuestions > 0">
+          <h2 class="font-body font-bold text-duo-text mb-4">📊 Your stats</h2>
+
+          <!-- Overall progress -->
+          <div class="mb-4">
+            <div class="flex justify-between items-center mb-1">
+              <span class="font-body font-bold text-sm text-duo-text">Questions answered</span>
+              <span class="font-body font-bold text-sm text-duo-gray" x-text="`${stats.totalAnswered}/${stats.totalQuestions}`"></span>
+            </div>
+            <div class="duo-cat-bar-track">
+              <div class="duo-cat-bar-fill" :style="`width:${stats.coveragePct}%; background:var(--duo-blue);`"></div>
+            </div>
+          </div>
+
+          <!-- Accuracy -->
+          <div class="mb-4">
+            <div class="flex justify-between items-center mb-1">
+              <span class="font-body font-bold text-sm text-duo-text">Overall accuracy</span>
+              <span class="font-body font-bold text-sm text-duo-gray" x-text="`${stats.accuracyPct}%`"></span>
+            </div>
+            <div class="duo-cat-bar-track">
+              <div class="duo-cat-bar-fill" :style="`width:${stats.accuracyPct}%; background:${stats.accuracyPct >= 70 ? 'var(--duo-green)' : stats.accuracyPct >= 40 ? 'var(--duo-yellow)' : 'var(--duo-red)'};`"></div>
+            </div>
+          </div>
+
+          <!-- Quizzes taken -->
+          <div class="mb-4">
+            <div class="flex justify-between items-center mb-1">
+              <span class="font-body font-bold text-sm text-duo-text">Quizzes completed</span>
+              <span class="font-body font-bold text-sm text-duo-gray" x-text="stats.quizzesTaken"></span>
+            </div>
+          </div>
+
+          <!-- Per category -->
+          <div x-show="stats.byCategory.length > 0">
+            <p class="font-body font-bold text-sm text-duo-text mb-2">Accuracy by category</p>
+            <div class="space-y-2">
+              <template x-for="cat in stats.byCategory" :key="cat.name">
+                <div>
+                  <div class="flex justify-between items-center mb-1">
+                    <span class="font-body text-sm text-duo-text" x-text="cat.name"></span>
+                    <span class="font-body text-sm text-duo-gray" x-text="`${cat.correct}/${cat.total} (${cat.pct}%)`"></span>
+                  </div>
+                  <div class="duo-cat-bar-track">
+                    <div class="duo-cat-bar-fill" :style="`width:${cat.pct}%; background:${cat.color};`"></div>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
+        </div>
+
         <div class="mb-6">
           <h2 class="font-body font-bold text-duo-text mb-3">Categories</h2>
           <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">

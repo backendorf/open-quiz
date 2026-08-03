@@ -54,6 +54,16 @@ document.addEventListener("alpine:init", () => {
     answers: [],             // {question, answer, correct}[]
     reviewOpen: false,
 
+    // stats
+    stats: {
+      totalQuestions: 0,
+      totalAnswered: 0,
+      coveragePct: 0,
+      accuracyPct: 0,
+      quizzesTaken: 0,
+      byCategory: [],
+    },
+
     // report
     reportSending: false,
     reportSent: false,
@@ -139,6 +149,7 @@ document.addEventListener("alpine:init", () => {
         localStorage.setItem("quiz_supabase_key", this.key);
 
         await this.updateAvailableCount();
+        this.loadStats();
         this.screen = "setup";
       } catch (err) {
         this.connectError = "Could not connect. Please check the URL and key.";
@@ -149,6 +160,63 @@ document.addEventListener("alpine:init", () => {
     },
 
     // ---------- SCREEN 2: setup ----------
+    async loadStats() {
+      // total questions (without reports)
+      const { count: totalQ } = await this.supabaseClient
+        .from("questoes")
+        .select("id", { count: "exact", head: true })
+        .or("reports.is.null,reports.eq.0");
+      this.stats.totalQuestions = totalQ || 0;
+
+      // all attempts
+      const { data: attempts } = await this.supabaseClient
+        .from("tentativas")
+        .select("questao_id, acertou, simulado_numero");
+
+      if (!attempts || attempts.length === 0) return;
+
+      // unique answered questions
+      const uniqueAnswered = new Set(attempts.map((a) => a.questao_id));
+      this.stats.totalAnswered = uniqueAnswered.size;
+      this.stats.coveragePct = this.stats.totalQuestions
+        ? Math.round((this.stats.totalAnswered / this.stats.totalQuestions) * 100)
+        : 0;
+
+      // accuracy
+      const totalCorrect = attempts.filter((a) => a.acertou).length;
+      this.stats.accuracyPct = Math.round((totalCorrect / attempts.length) * 100);
+
+      // quizzes taken (unique simulado_numero)
+      const uniqueQuizzes = new Set(attempts.map((a) => a.simulado_numero));
+      this.stats.quizzesTaken = uniqueQuizzes.size;
+
+      // per category: need question -> category mapping
+      const { data: allQuestions } = await this.supabaseClient
+        .from("questoes")
+        .select("id, categoria_id");
+
+      if (allQuestions) {
+        const qMap = {};
+        allQuestions.forEach((q) => { qMap[q.id] = q.categoria_id; });
+
+        const byCat = {};
+        attempts.forEach((a) => {
+          const catId = qMap[a.questao_id];
+          if (!catId) return;
+          const catName = this.categoryName(catId) || "Other";
+          if (!byCat[catName]) byCat[catName] = { correct: 0, total: 0 };
+          byCat[catName].total += 1;
+          if (a.acertou) byCat[catName].correct += 1;
+        });
+
+        this.stats.byCategory = Object.entries(byCat).map(([name, v]) => {
+          const pct = Math.round((v.correct / v.total) * 100);
+          const color = pct >= 70 ? "var(--duo-green)" : pct >= 40 ? "var(--duo-yellow)" : "var(--duo-red)";
+          return { name, correct: v.correct, total: v.total, pct, color };
+        });
+      }
+    },
+
     async updateAvailableCount() {
       const ids = this.categoryRows
         .filter((c) => this.selected.includes(c.slug))
@@ -295,6 +363,7 @@ document.addEventListener("alpine:init", () => {
 
     // ---------- SCREEN 4: results ----------
     backToSetup() {
+      this.loadStats();
       this.screen = "setup";
     },
   }));
