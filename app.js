@@ -421,9 +421,11 @@ document.addEventListener("alpine:init", () => {
       const tipo = this.currentQuestion.tipo;
 
       if (tipo === "multiple_choice") {
-        this.currentAnswer = this.currentAnswer.includes(letter)
-          ? this.currentAnswer.filter((l) => l !== letter)
-          : [...this.currentAnswer, letter];
+        if (this.currentAnswer.includes(letter)) {
+          this.currentAnswer = this.currentAnswer.filter((l) => l !== letter);
+        } else if (this.currentAnswer.length < 2) {
+          this.currentAnswer = [...this.currentAnswer, letter];
+        }
       } else {
         this.currentAnswer = [letter];
       }
