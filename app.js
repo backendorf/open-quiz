@@ -69,6 +69,73 @@ document.addEventListener("alpine:init", () => {
     reportSending: false,
     reportSent: false,
 
+    // study links
+    studyLinks: [],
+
+    async loadStudyLinks() {
+      // Get all attempts
+      const { data: attempts } = await this.supabaseClient
+        .from("tentativas")
+        .select("questao_id, acertou");
+
+      if (!attempts || attempts.length === 0) {
+        this.studyLinks = [];
+        return;
+      }
+
+      // Find questions never answered correctly
+      const correctIds = new Set(attempts.filter((a) => a.acertou).map((a) => a.questao_id));
+      const errorCounts = {};
+      attempts.forEach((a) => {
+        if (!a.acertou) {
+          errorCounts[a.questao_id] = (errorCounts[a.questao_id] || 0) + 1;
+        }
+      });
+
+      // Keep only IDs never answered correctly
+      const mistakeIds = Object.keys(errorCounts).filter((id) => !correctIds.has(id));
+
+      if (mistakeIds.length === 0) {
+        this.studyLinks = [];
+        return;
+      }
+
+      // Fetch those questions with their "fonte" field
+      const { data: questions } = await this.supabaseClient
+        .from("questoes")
+        .select("id, fonte")
+        .in("id", mistakeIds);
+
+      if (!questions) {
+        this.studyLinks = [];
+        return;
+      }
+
+      // Group by fonte, sum error counts
+      const byFonte = {};
+      questions.forEach((q) => {
+        if (!q.fonte) return;
+        if (!byFonte[q.fonte]) byFonte[q.fonte] = 0;
+        byFonte[q.fonte] += errorCounts[q.id] || 1;
+      });
+
+      // Sort by error count descending
+      this.studyLinks = Object.entries(byFonte)
+        .map(([url, errors]) => {
+          // Extract a readable title from the URL
+          let title = url;
+          try {
+            const u = new URL(url);
+            const path = u.pathname.replace(/\/$/, "").split("/").pop() || u.hostname;
+            title = path.replace(/[-_]/g, " ").replace(/\.html?$/, "");
+          } catch (e) {
+            // not a valid URL, use as-is
+          }
+          return { url, title, errors };
+        })
+        .sort((a, b) => b.errors - a.errors);
+    },
+
     // ---------- getters ----------
     get currentQuestion() {
       return this.questions[this.currentIndex] || null;
@@ -151,6 +218,7 @@ document.addEventListener("alpine:init", () => {
 
         await this.updateAvailableCount();
         this.loadStats();
+        this.loadStudyLinks();
         this.screen = "setup";
       } catch (err) {
         this.connectError = "Could not connect. Please check the URL and key.";
@@ -421,6 +489,7 @@ document.addEventListener("alpine:init", () => {
     // ---------- SCREEN 4: results ----------
     backToSetup() {
       this.loadStats();
+      this.loadStudyLinks();
       this.screen = "setup";
     },
   }));

@@ -65,25 +65,24 @@
 
         <div class="flex-1 flex flex-col lg:flex-row gap-6">
 
-          <!-- Left sidebar: Tips & Info -->
+          <!-- Left sidebar: Study Links based on mistakes -->
           <aside class="w-full lg:w-64 flex-shrink-0 order-2 lg:order-1">
             <div class="duo-card sticky top-6">
-              <h2 class="font-body font-bold text-duo-text mb-3">💡 Tips</h2>
-              <ul class="space-y-3 font-body text-sm text-duo-gray">
-                <li>🎯 Unanswered questions are prioritized</li>
-                <li>🚩 Report broken questions to remove them</li>
-                <li>📈 Track your accuracy per category</li>
-                <li>🔄 Mix categories for a realistic exam</li>
-              </ul>
-              <hr class="my-4 border-duo-border">
-              <div>
-                <p class="font-body font-bold text-xs text-duo-gray uppercase tracking-wide mb-2">Exam info</p>
-                <ul class="space-y-1 font-body text-xs text-duo-gray">
-                  <li>⏱ 120 minutes</li>
-                  <li>📝 ~50 questions</li>
-                  <li>✅ Passing score: 68%</li>
-                </ul>
+              <h2 class="font-body font-bold text-duo-text mb-3">📚 Study Links</h2>
+              <p class="font-body text-xs text-duo-gray mb-3">Based on your mistakes, ordered by error count</p>
+              <div x-show="studyLinks.length === 0">
+                <p class="font-body text-sm text-duo-gray-light italic">No mistakes yet — start a quiz!</p>
               </div>
+              <ul class="space-y-2" x-show="studyLinks.length > 0">
+                <template x-for="link in studyLinks" :key="link.url">
+                  <li>
+                    <a :href="link.url" target="_blank" rel="noopener noreferrer" class="font-body text-sm text-duo-blue hover:underline flex items-start gap-1.5">
+                      <span class="flex-shrink-0 font-bold text-duo-red text-xs mt-0.5" x-text="`(${link.errors})`"></span>
+                      <span x-text="link.title"></span>
+                    </a>
+                  </li>
+                </template>
+              </ul>
             </div>
           </aside>
 
