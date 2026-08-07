@@ -14,6 +14,11 @@
 </head>
 <body class="min-h-screen">
 
+  <!-- Dark mode switcher -->
+  <button class="theme-switcher" onclick="toggleTheme()" aria-label="Toggle dark mode">
+    <span id="theme-icon">🌙</span>
+  </button>
+
   <div id="app" class="min-h-screen flex flex-col" x-data="quizApp()">
 
     <!-- ===================== LOADING ===================== -->
@@ -291,6 +296,25 @@
 
   </div>
 
+  <script>
+    // Theme switcher
+    function toggleTheme() {
+      const html = document.documentElement;
+      const isDark = html.getAttribute('data-theme') === 'dark';
+      const newTheme = isDark ? 'light' : 'dark';
+      html.setAttribute('data-theme', newTheme);
+      localStorage.setItem('quiz_theme', newTheme);
+      document.getElementById('theme-icon').textContent = newTheme === 'dark' ? '☀️' : '🌙';
+    }
+    // Apply saved theme on load
+    (function() {
+      const saved = localStorage.getItem('quiz_theme') || 'light';
+      if (saved === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        document.getElementById('theme-icon').textContent = '☀️';
+      }
+    })();
+  </script>
   <script src="app.js"></script>
 </body>
 </html>
