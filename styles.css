@@ -362,6 +362,27 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* ---------- Custom scrollbars ---------- */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--duo-border);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--duo-gray-light);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--duo-border) transparent;
+}
+
 /* ---------- Study links ---------- */
 .study-link-item {
   display: flex;
