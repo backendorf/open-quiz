@@ -66,23 +66,25 @@
 
           <!-- Left sidebar: Study Links based on mistakes -->
           <aside class="w-full lg:w-64 flex-shrink-0 order-2 lg:order-1 lg:overflow-y-auto">
-            <div class="duo-card sticky top-6">
-              <h2 class="font-body font-bold text-duo-text mb-1">📚 Study Links</h2>
-              <p class="font-body text-xs text-duo-gray-light mb-4">Based on your mistakes</p>
-              <div x-show="studyLinks.length === 0">
-                <div class="text-center py-4">
-                  <div class="text-3xl mb-2">✨</div>
-                  <p class="font-body text-sm text-duo-gray-light">No mistakes yet — start a quiz!</p>
+            <div class="duo-card sticky top-6 flex flex-col">
+              <h2 class="font-body font-bold text-duo-text mb-1 flex-shrink-0">📚 Study Links</h2>
+              <p class="font-body text-xs text-duo-gray-light mb-4 flex-shrink-0">Based on your mistakes</p>
+              <div class="flex-1 overflow-y-auto">
+                <div x-show="studyLinks.length === 0">
+                  <div class="text-center py-4">
+                    <div class="text-3xl mb-2">✨</div>
+                    <p class="font-body text-sm text-duo-gray-light">No mistakes yet — start a quiz!</p>
+                  </div>
                 </div>
-              </div>
-              <div class="space-y-2" x-show="studyLinks.length > 0">
-                <template x-for="link in studyLinks" :key="link.url">
-                  <a :href="link.url" target="_blank" rel="noopener noreferrer" class="study-link-item">
-                    <span class="study-link-badge" x-text="link.errors"></span>
-                    <span class="study-link-title" x-text="link.title"></span>
-                    <span class="study-link-arrow">↗</span>
-                  </a>
-                </template>
+                <div class="space-y-2" x-show="studyLinks.length > 0">
+                  <template x-for="link in studyLinks" :key="link.url">
+                    <a :href="link.url" target="_blank" rel="noopener noreferrer" class="study-link-item">
+                      <span class="study-link-badge" x-text="link.errors"></span>
+                      <span class="study-link-title" x-text="link.title"></span>
+                      <span class="study-link-arrow">↗</span>
+                    </a>
+                  </template>
+                </div>
               </div>
             </div>
           </aside>
@@ -130,8 +132,9 @@
 
           <!-- Right sidebar: Stats -->
           <aside class="w-full lg:w-72 flex-shrink-0 order-3 lg:overflow-y-auto" x-show="stats.totalQuestions > 0">
-            <div class="duo-card sticky top-6">
-              <h2 class="font-body font-bold text-duo-text mb-4">📊 Your stats</h2>
+            <div class="duo-card sticky top-6 flex flex-col">
+              <h2 class="font-body font-bold text-duo-text mb-4 flex-shrink-0">📊 Your stats</h2>
+              <div class="flex-1 overflow-y-auto">
 
               <div class="grid grid-cols-3 gap-2 mb-5">
                 <div class="text-center">
@@ -175,6 +178,7 @@
                     </div>
                   </template>
                 </div>
+              </div>
               </div>
             </div>
           </aside>
