@@ -73,21 +73,23 @@
           <!-- Left sidebar: Study Links based on mistakes -->
           <aside class="w-full lg:w-64 flex-shrink-0 order-2 lg:order-1">
             <div class="duo-card sticky top-6">
-              <h2 class="font-body font-bold text-duo-text mb-3">📚 Study Links</h2>
-              <p class="font-body text-xs text-duo-gray mb-3">Based on your mistakes, ordered by error count</p>
+              <h2 class="font-body font-bold text-duo-text mb-1">📚 Study Links</h2>
+              <p class="font-body text-xs text-duo-gray-light mb-4">Based on your mistakes</p>
               <div x-show="studyLinks.length === 0">
-                <p class="font-body text-sm text-duo-gray-light italic">No mistakes yet — start a quiz!</p>
+                <div class="text-center py-4">
+                  <div class="text-3xl mb-2">✨</div>
+                  <p class="font-body text-sm text-duo-gray-light">No mistakes yet — start a quiz!</p>
+                </div>
               </div>
-              <ul class="space-y-2" x-show="studyLinks.length > 0">
+              <div class="space-y-2" x-show="studyLinks.length > 0">
                 <template x-for="link in studyLinks" :key="link.url">
-                  <li>
-                    <a :href="link.url" target="_blank" rel="noopener noreferrer" class="font-body text-sm text-duo-blue hover:underline flex items-start gap-1.5">
-                      <span class="flex-shrink-0 font-bold text-duo-red text-xs mt-0.5" x-text="`(${link.errors})`"></span>
-                      <span x-text="link.title"></span>
-                    </a>
-                  </li>
+                  <a :href="link.url" target="_blank" rel="noopener noreferrer" class="study-link-item">
+                    <span class="study-link-badge" x-text="link.errors"></span>
+                    <span class="study-link-title" x-text="link.title"></span>
+                    <span class="study-link-arrow">↗</span>
+                  </a>
                 </template>
-              </ul>
+              </div>
             </div>
           </aside>
 
