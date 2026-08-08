@@ -1,9 +1,55 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Quiz AD0-E727</title>
+<title>Quiz AD0-E727 — Adobe Commerce Front-End Developer Expert | Simulado Gratuito</title>
+<meta name="description" content="Simulado gratuito para a certificação Adobe Commerce Front-End Developer Expert (AD0-E727). Pratique com questões por categoria, acompanhe seu progresso e estude de forma inteligente." />
+<meta name="keywords" content="AD0-E727, Adobe Commerce, Magento, certificação, quiz, simulado, front-end developer, expert" />
+<meta name="author" content="Quiz AD0-E727" />
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="https://quiz-ad0e727.com/" />
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Quiz AD0-E727 — Adobe Commerce Front-End Developer Expert" />
+<meta property="og:description" content="Simulado gratuito para a certificação Adobe Commerce Front-End Developer Expert (AD0-E727). Pratique questões e acompanhe seu progresso." />
+<meta property="og:url" content="https://quiz-ad0e727.com/" />
+<meta property="og:locale" content="pt_BR" />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Quiz AD0-E727 — Adobe Commerce Front-End Developer Expert" />
+<meta name="twitter:description" content="Simulado gratuito para a certificação Adobe Commerce Front-End Developer Expert (AD0-E727)." />
+
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Quiz AD0-E727",
+  "description": "Simulado gratuito para a certificação Adobe Commerce Front-End Developer Expert (AD0-E727)",
+  "applicationCategory": "EducationalApplication",
+  "operatingSystem": "Web",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "BRL"
+  }
+}
+</script>
+
+<!-- Favicons & PWA -->
+<link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#58cc02">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Quiz AD0-E727">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -14,17 +60,21 @@
 </head>
 <body class="min-h-screen">
 
-  <div id="app" class="h-[90vh] flex flex-col mx-auto" x-data="quizApp()">
+  <noscript>
+    <p style="text-align:center;padding:2rem;font-size:1.2rem;">Este aplicativo requer JavaScript habilitado para funcionar.</p>
+  </noscript>
+
+  <main id="app" class="h-[90vh] flex flex-col mx-auto" x-data="quizApp()" role="main" aria-label="Quiz AD0-E727">
 
     <!-- ===================== LOADING ===================== -->
-    <section x-show="screen === 'loading'" class="screen flex-1 flex items-center justify-center p-6">
+    <section x-show="screen === 'loading'" class="screen flex-1 flex items-center justify-center p-6" aria-label="Carregando">
       <div class="text-center">
-        <p class="font-body font-bold text-duo-gray">Loading...</p>
+        <p class="font-body font-bold text-duo-gray" aria-live="polite">Loading...</p>
       </div>
     </section>
 
     <!-- ===================== SCREEN 1 — CONNECTION ===================== -->
-    <section x-show="screen === 'connect'" class="screen flex-1 flex items-center justify-center p-6">
+    <section x-show="screen === 'connect'" class="screen flex-1 flex items-center justify-center p-6" aria-label="Conexão com banco de questões">
       <div class="w-full max-w-md">
         <div class="text-center mb-8">
           <h1 class="font-display text-3xl text-duo-text mb-2">Quiz AD0-E727</h1>
@@ -54,7 +104,7 @@
     </section>
 
     <!-- ===================== SCREEN 2 — SETUP ===================== -->
-    <section x-show="screen === 'setup'" class="screen flex-1 flex flex-col p-6 overflow-hidden">
+    <section x-show="screen === 'setup'" class="screen flex-1 flex flex-col p-6 overflow-hidden" aria-label="Configuração do quiz">
       <div class="w-full max-w-6xl mx-auto flex-1 flex flex-col overflow-hidden">
         <div class="text-center mb-8 mt-4">
           <h1 class="font-display text-2xl sm:text-3xl text-duo-text mb-1">AD0-E727 Adobe Commerce Front-End Developer Expert</h1>
@@ -184,13 +234,13 @@
     </section>
 
     <!-- ===================== SCREEN 3 — QUIZ ===================== -->
-    <section x-show="screen === 'quiz'" class="screen flex-1 flex flex-col">
-      <header class="px-6 pt-5 pb-3 flex items-center gap-4">
-        <button type="button" @click="exitQuiz()" aria-label="Exit quiz" class="text-duo-gray-light hover:text-duo-gray text-2xl leading-none font-bold">✕</button>
-        <div class="flex-1 h-4 bg-duo-border rounded-full overflow-hidden">
+    <section x-show="screen === 'quiz'" class="screen flex-1 flex flex-col" aria-label="Questão do quiz">
+      <header class="px-6 pt-5 pb-3 flex items-center gap-4" aria-label="Progresso do quiz">
+        <button type="button" @click="exitQuiz()" aria-label="Sair do quiz" class="text-duo-gray-light hover:text-duo-gray text-2xl leading-none font-bold">✕</button>
+        <div class="flex-1 h-4 bg-duo-border rounded-full overflow-hidden" role="progressbar" :aria-valuenow="Math.round(progressPct)" aria-valuemin="0" aria-valuemax="100" :aria-label="`Progresso: ${Math.round(progressPct)}%`">
           <div class="h-full bg-duo-green rounded-full duo-transition" :style="`width: ${progressPct}%`"></div>
         </div>
-        <span class="font-body font-bold text-duo-gray text-sm whitespace-nowrap" x-text="`${currentIndex + 1}/${questions.length}`"></span>
+        <span class="font-body font-bold text-duo-gray text-sm whitespace-nowrap" x-text="`${currentIndex + 1}/${questions.length}`" aria-label="Questão atual"></span>
       </header>
 
       <div class="flex-1 overflow-y-auto px-6 py-4">
@@ -235,7 +285,7 @@
     </section>
 
     <!-- ===================== SCREEN 4 — RESULTS ===================== -->
-    <section x-show="screen === 'results'" class="screen flex-1 flex flex-col p-6">
+    <section x-show="screen === 'results'" class="screen flex-1 flex flex-col p-6" aria-label="Resultados do quiz">
       <div class="w-full max-w-2xl mx-auto flex-1 flex flex-col">
         <div class="text-center mt-6 mb-8">
           <div class="text-5xl mb-3">✓</div>
@@ -291,9 +341,9 @@
     </section>
 
     <!-- ===================== MODAL ===================== -->
-    <div x-show="modalOpen" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="modal-overlay">
+    <div x-show="modalOpen" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-message">
       <div class="modal-content" @click.outside="modalOpen = false">
-        <p class="font-body font-bold text-duo-text text-center mb-6" x-text="modalMessage"></p>
+        <p id="modal-message" class="font-body font-bold text-duo-text text-center mb-6" x-text="modalMessage"></p>
         <div class="flex gap-3">
           <button type="button" class="duo-btn duo-btn-gray flex-1" @click="modalOpen = false">CANCEL</button>
           <button type="button" class="duo-btn duo-btn-red flex-1" @click="modalConfirmAction()">CONFIRM</button>
@@ -301,7 +351,7 @@
       </div>
     </div>
 
-  </div>
+  </main>
 
   <script>
     // Auto dark mode based on system preference
@@ -315,5 +365,15 @@
     })();
   </script>
   <script src="app.js"></script>
+  <script>
+    // Register Service Worker for PWA
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then((reg) => console.log('SW registered:', reg.scope))
+          .catch((err) => console.warn('SW registration failed:', err));
+      });
+    }
+  </script>
 </body>
 </html>
