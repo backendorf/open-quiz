@@ -19,7 +19,6 @@
     <!-- ===================== LOADING ===================== -->
     <section x-show="screen === 'loading'" class="screen flex-1 flex items-center justify-center p-6">
       <div class="text-center">
-        <div class="text-5xl mb-4 animate-bounce">🦉</div>
         <p class="font-body font-bold text-duo-gray">Loading...</p>
       </div>
     </section>
@@ -28,7 +27,6 @@
     <section x-show="screen === 'connect'" class="screen flex-1 flex items-center justify-center p-6">
       <div class="w-full max-w-md">
         <div class="text-center mb-8">
-          <div class="text-5xl mb-3">🦉</div>
           <h1 class="font-display text-3xl text-duo-text mb-2">Quiz AD0-E727</h1>
           <p class="font-body text-duo-gray">Connect your question bank to get started</p>
         </div>
@@ -67,13 +65,12 @@
           <!-- Left sidebar: Study Links based on mistakes -->
           <aside class="w-full lg:w-64 flex-shrink-0 order-2 lg:order-1 lg:overflow-hidden">
             <div class="duo-card h-full flex flex-col">
-              <h2 class="font-body font-bold text-duo-text mb-1 flex-shrink-0">📚 Study Links</h2>
+              <h2 class="font-body font-bold text-duo-text mb-1 flex-shrink-0">Study Links</h2>
               <p class="font-body text-xs text-duo-gray-light mb-4 flex-shrink-0">Based on your mistakes</p>
               <div class="flex-1 overflow-y-auto min-h-0">
                 <div x-show="studyLinks.length === 0">
                   <div class="text-center py-4">
-                    <div class="text-3xl mb-2">✨</div>
-                    <p class="font-body text-sm text-duo-gray-light">No mistakes yet — start a quiz!</p>
+                    <p class="font-body text-sm text-duo-gray-light">No mistakes yet</p>
                   </div>
                 </div>
                 <div class="space-y-2" x-show="studyLinks.length > 0">
@@ -98,7 +95,6 @@
                 <template x-for="cat in categoryRows" :key="cat.id">
                   <label class="duo-chip" :class="{ selected: selected.includes(cat.slug) }">
                     <input type="checkbox" :value="cat.slug" x-model="selected" @change="updateAvailableCount()">
-                    <span class="text-lg" x-text="categoryMeta(cat.slug).emoji"></span>
                     <span x-text="categoryMeta(cat.slug).name"></span>
                   </label>
                 </template>
@@ -125,7 +121,7 @@
                 <span x-text="loadingQuiz ? 'LOADING...' : 'START'"></span>
               </button>
               <button type="button" class="duo-btn duo-btn-red w-full" :disabled="loadingQuiz || stats.mistakeCount === 0" @click="startReview()">
-                <span x-text="loadingQuiz ? 'LOADING...' : `🔄 REVIEW MISTAKES (${stats.mistakeCount})`"></span>
+                <span x-text="loadingQuiz ? 'LOADING...' : `REVIEW MISTAKES (${stats.mistakeCount})`"></span>
               </button>
             </div>
           </div>
@@ -133,7 +129,7 @@
           <!-- Right sidebar: Stats -->
           <aside class="w-full lg:w-72 flex-shrink-0 order-3 lg:overflow-hidden" x-show="stats.totalQuestions > 0">
             <div class="duo-card h-full flex flex-col">
-              <h2 class="font-body font-bold text-duo-text mb-4 flex-shrink-0">📊 Your stats</h2>
+              <h2 class="font-body font-bold text-duo-text mb-4 flex-shrink-0">Stats</h2>
               <div class="flex-1 overflow-y-auto min-h-0">
 
               <div class="grid grid-cols-3 gap-2 mb-5">
@@ -217,7 +213,7 @@
           <!-- Report button -->
           <div class="mt-4 flex justify-end" x-show="checked">
             <button type="button" class="duo-report-btn" :disabled="reportSending || reportSent" @click="reportQuestion()" aria-label="Report question">
-              <span x-text="reportSent ? '🚩 Reported' : '🚩 Report'"></span>
+              <span x-text="reportSent ? 'Reported' : 'Report'"></span>
             </button>
           </div>
         </div>
@@ -226,7 +222,7 @@
       <footer class="duo-action-bar px-6 py-4" :class="{ 'state-correct': checked && lastAnswer?.correct, 'state-incorrect': checked && lastAnswer && !lastAnswer.correct }">
         <div class="max-w-2xl mx-auto">
           <div x-show="checked" class="mb-3 font-body">
-            <p class="font-display text-lg mb-1" :style="`color: ${lastAnswer?.correct ? 'var(--duo-green-dark)' : 'var(--duo-red-dark)'}`" x-text="lastAnswer?.correct ? '✅ Correct!' : '❌ Almost!'"></p>
+            <p class="font-display text-lg mb-1" :style="`color: ${lastAnswer?.correct ? 'var(--duo-green-dark)' : 'var(--duo-red-dark)'}`" x-text="lastAnswer?.correct ? 'Correct!' : 'Incorrect'"></p>
             <p class="text-sm leading-relaxed" x-text="currentQuestion?.explicacao || ''"></p>
           </div>
           <button type="button" class="duo-btn w-full" :class="checked ? (lastAnswer?.correct ? 'duo-btn-green' : 'duo-btn-red') : 'duo-btn-green'"
@@ -276,7 +272,7 @@
           <div x-show="reviewOpen" class="mt-4 space-y-4">
             <template x-for="(r, i) in answers" :key="i">
               <div class="duo-card">
-                <p class="font-body font-bold text-sm text-duo-gray-light mb-1" x-text="`Question ${i + 1} ${r.correct ? '✅' : '❌'}`"></p>
+                <p class="font-body font-bold text-sm text-duo-gray-light mb-1" x-text="`Question ${i + 1} — ${r.correct ? 'Correct' : 'Wrong'}`"></p>
                 <p class="font-body font-bold text-duo-text mb-2" x-text="r.question.enunciado"></p>
                 <p class="font-body text-sm text-duo-gray mb-1">
                   Your answer: <strong x-text="r.answer.join(', ') || '—'"></strong> ·

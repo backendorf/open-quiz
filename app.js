@@ -3,12 +3,12 @@
 // ============================================================
 
 const CATEGORIES_META = {
-  "page-builder": { name: "Admin & Page Builder", emoji: "🧩" },
-  "styles": { name: "Styles (LESS)", emoji: "🎨" },
-  "layout-xml-templates": { name: "Layout XML & Templates", emoji: "🧱" },
-  "theme-management": { name: "Theme Management", emoji: "🖼️" },
-  "javascript": { name: "JavaScript", emoji: "⚡" },
-  "tools-cli-grunt": { name: "Tools (CLI & Grunt)", emoji: "🛠️" },
+  "page-builder": { name: "Admin & Page Builder", emoji: "" },
+  "styles": { name: "Styles (LESS)", emoji: "" },
+  "layout-xml-templates": { name: "Layout XML & Templates", emoji: "" },
+  "theme-management": { name: "Theme Management", emoji: "" },
+  "javascript": { name: "JavaScript", emoji: "" },
+  "tools-cli-grunt": { name: "Tools (CLI & Grunt)", emoji: "" },
 };
 
 function shuffle(array) {
