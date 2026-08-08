@@ -65,11 +65,11 @@
         <div class="flex-1 flex flex-col lg:flex-row gap-6 overflow-hidden">
 
           <!-- Left sidebar: Study Links based on mistakes -->
-          <aside class="w-full lg:w-64 flex-shrink-0 order-2 lg:order-1 lg:overflow-y-auto">
-            <div class="duo-card sticky top-6 flex flex-col">
+          <aside class="w-full lg:w-64 flex-shrink-0 order-2 lg:order-1 lg:overflow-hidden">
+            <div class="duo-card h-full flex flex-col">
               <h2 class="font-body font-bold text-duo-text mb-1 flex-shrink-0">📚 Study Links</h2>
               <p class="font-body text-xs text-duo-gray-light mb-4 flex-shrink-0">Based on your mistakes</p>
-              <div class="flex-1 overflow-y-auto">
+              <div class="flex-1 overflow-y-auto min-h-0">
                 <div x-show="studyLinks.length === 0">
                   <div class="text-center py-4">
                     <div class="text-3xl mb-2">✨</div>
@@ -131,10 +131,10 @@
           </div>
 
           <!-- Right sidebar: Stats -->
-          <aside class="w-full lg:w-72 flex-shrink-0 order-3 lg:overflow-y-auto" x-show="stats.totalQuestions > 0">
-            <div class="duo-card sticky top-6 flex flex-col">
+          <aside class="w-full lg:w-72 flex-shrink-0 order-3 lg:overflow-hidden" x-show="stats.totalQuestions > 0">
+            <div class="duo-card h-full flex flex-col">
               <h2 class="font-body font-bold text-duo-text mb-4 flex-shrink-0">📊 Your stats</h2>
-              <div class="flex-1 overflow-y-auto">
+              <div class="flex-1 overflow-y-auto min-h-0">
 
               <div class="grid grid-cols-3 gap-2 mb-5">
                 <div class="text-center">
