@@ -78,24 +78,25 @@ body {
 /* ---------- Dark mode switcher ---------- */
 .theme-switcher {
   position: fixed;
-  top: 1rem;
-  right: 1rem;
+  top: 0.75rem;
+  right: 0.75rem;
   z-index: 50;
-  width: 44px;
-  height: 44px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
-  border: 2px solid var(--duo-border);
+  border: 1.5px solid var(--duo-border);
   background: var(--duo-surface);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.25rem;
-  transition: border-color 0.15s ease, background-color 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  font-size: 1.1rem;
+  transition: border-color 0.15s ease, background-color 0.3s ease, transform 0.1s ease;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
 }
 .theme-switcher:hover {
   border-color: var(--duo-blue);
+  transform: scale(1.05);
 }
 .theme-switcher:focus-visible {
   outline: 2px solid var(--duo-blue);
@@ -107,12 +108,12 @@ body {
   width: 100%;
   font-family: "Nunito", sans-serif;
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 0.9rem;
   color: var(--duo-text);
   background: var(--duo-surface);
   border: 2px solid var(--duo-border);
-  border-radius: 14px;
-  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
   outline: none;
   transition: border-color 0.15s ease, background-color 0.3s ease;
 }
@@ -126,14 +127,14 @@ body {
   outline-offset: 2px;
 }
 
-/* ---------- Chunky 3D buttons (signature element) ---------- */
+/* ---------- Chunky 3D buttons ---------- */
 .duo-btn {
   font-family: "Baloo 2", sans-serif;
   font-weight: 700;
   letter-spacing: 0.03em;
-  font-size: 1rem;
-  padding: 0.95rem 1.5rem;
-  border-radius: 16px;
+  font-size: 0.9rem;
+  padding: 0.8rem 1.25rem;
+  border-radius: 14px;
   border: none;
   cursor: pointer;
   transition: transform 0.05s ease, box-shadow 0.05s ease, background-color 0.15s ease;
@@ -184,10 +185,10 @@ body {
 .duo-qty-chip {
   font-family: "Baloo 2", sans-serif;
   font-weight: 700;
-  font-size: 0.9rem;
-  min-width: 44px;
-  padding: 0.5rem 0.75rem;
-  border-radius: 12px;
+  font-size: 0.8rem;
+  min-width: 38px;
+  padding: 0.4rem 0.6rem;
+  border-radius: 10px;
   border: 2px solid var(--duo-border);
   background: var(--duo-surface);
   color: var(--duo-text);
@@ -232,15 +233,15 @@ body {
 .duo-chip {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 0.9rem;
+  gap: 0.4rem;
+  padding: 0.6rem 0.75rem;
   border: 2px solid var(--duo-border);
-  border-radius: 14px;
+  border-radius: 12px;
   background: var(--duo-surface);
   cursor: pointer;
   font-family: "Nunito", sans-serif;
   font-weight: 700;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: var(--duo-text);
   transition: border-color 0.15s ease, background-color 0.15s ease;
   user-select: none;
@@ -295,16 +296,16 @@ body {
 .duo-option {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.65rem;
   width: 100%;
   text-align: left;
-  padding: 0.9rem 1.1rem;
+  padding: 0.8rem 1rem;
   border: 2px solid var(--duo-border);
-  border-radius: 14px;
+  border-radius: 12px;
   background: var(--duo-surface);
   font-family: "Nunito", sans-serif;
   font-weight: 700;
-  font-size: 0.95rem;
+  font-size: 0.88rem;
   color: var(--duo-text);
   cursor: pointer;
   transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.05s ease;
@@ -334,8 +335,8 @@ body {
 }
 
 .duo-option-mark {
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   border-radius: 999px;
   border: 2px solid var(--duo-border);
   flex-shrink: 0;
@@ -362,15 +363,15 @@ body {
 /* ---------- Cards ---------- */
 .duo-card {
   background: var(--duo-surface);
-  border: 2px solid var(--duo-border);
-  border-radius: 18px;
-  padding: 1.25rem;
+  border: 1.5px solid var(--duo-border);
+  border-radius: 14px;
+  padding: 1rem;
   transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 /* ---------- Category result bar ---------- */
 .duo-cat-bar-track {
-  height: 10px;
+  height: 8px;
   border-radius: 999px;
   background: var(--duo-border);
   overflow: hidden;
@@ -392,9 +393,9 @@ body {
 .study-link-item {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  padding: 0.6rem 0.75rem;
-  border-radius: 10px;
+  gap: 0.5rem;
+  padding: 0.5rem 0.6rem;
+  border-radius: 8px;
   background: var(--duo-bg);
   border: 1px solid var(--duo-border);
   text-decoration: none;
@@ -412,14 +413,14 @@ body {
 
 .study-link-badge {
   flex-shrink: 0;
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   background: var(--duo-red);
   color: #ffffff;
   font-family: "Baloo 2", sans-serif;
   font-weight: 700;
-  font-size: 0.7rem;
+  font-size: 0.6rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -429,7 +430,7 @@ body {
   flex: 1;
   font-family: "Nunito", sans-serif;
   font-weight: 700;
-  font-size: 0.78rem;
+  font-size: 0.7rem;
   color: var(--duo-text);
   line-height: 1.3;
   overflow: hidden;
@@ -440,7 +441,7 @@ body {
 
 .study-link-arrow {
   flex-shrink: 0;
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   color: var(--duo-gray-light);
   transition: color 0.15s ease;
 }

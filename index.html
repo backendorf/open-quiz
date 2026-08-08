@@ -24,64 +24,58 @@
     <!-- ===================== LOADING ===================== -->
     <section x-show="screen === 'loading'" class="screen flex-1 flex items-center justify-center p-6">
       <div class="text-center">
-        <div class="text-5xl mb-4 animate-bounce">🦉</div>
-        <p class="font-body font-bold text-duo-gray">Loading...</p>
+        <div class="text-4xl mb-4 animate-pulse">⏳</div>
+        <p class="font-body font-bold text-duo-gray text-sm">Loading...</p>
       </div>
     </section>
 
     <!-- ===================== SCREEN 1 — CONNECTION ===================== -->
     <section x-show="screen === 'connect'" class="screen flex-1 flex items-center justify-center p-6">
-      <div class="w-full max-w-md">
-        <div class="text-center mb-8">
-          <div class="text-5xl mb-3">🦉</div>
-          <h1 class="font-display text-3xl text-duo-text mb-2">Quiz AD0-E727</h1>
-          <p class="font-body text-duo-gray">Connect your question bank to get started</p>
+      <div class="w-full max-w-sm">
+        <div class="text-center mb-10">
+          <h1 class="font-display text-2xl text-duo-text mb-1">Quiz AD0-E727</h1>
+          <p class="font-body text-duo-gray text-sm">Connect to your question bank</p>
         </div>
 
-        <form @submit.prevent="connect()" class="space-y-4">
+        <form @submit.prevent="connect()" class="space-y-5">
           <div>
-            <label for="input-url" class="block font-body font-bold text-sm text-duo-text mb-1.5">Supabase URL</label>
+            <label for="input-url" class="block font-body font-bold text-xs text-duo-gray uppercase tracking-wide mb-1.5">Supabase URL</label>
             <input id="input-url" type="url" required placeholder="https://xxxxx.supabase.co"
               x-model.trim="url" class="duo-input" autocomplete="off">
           </div>
           <div>
-            <label for="input-key" class="block font-body font-bold text-sm text-duo-text mb-1.5">Key (anon / publishable)</label>
+            <label for="input-key" class="block font-body font-bold text-xs text-duo-gray uppercase tracking-wide mb-1.5">Anon Key</label>
             <input id="input-key" type="password" required placeholder="sb_publishable_..."
               x-model.trim="key" class="duo-input" autocomplete="off">
           </div>
-          <p class="font-body text-xs text-duo-gray-light leading-relaxed">
-            Your credentials are saved locally in this browser for convenience.
-          </p>
-          <button type="submit" class="duo-btn duo-btn-green w-full mt-2" :disabled="connecting">
+          <button type="submit" class="duo-btn duo-btn-green w-full" :disabled="connecting">
             <span x-text="connecting ? 'CONNECTING...' : 'CONNECT'"></span>
           </button>
+          <p class="font-body text-xs text-duo-gray-light text-center">
+            Credentials stored locally only.
+          </p>
           <p x-show="connectError" x-text="connectError" class="font-body font-bold text-sm text-duo-red text-center"></p>
         </form>
       </div>
     </section>
 
     <!-- ===================== SCREEN 2 — SETUP ===================== -->
-    <section x-show="screen === 'setup'" class="screen flex-1 flex flex-col p-6">
+    <section x-show="screen === 'setup'" class="screen flex-1 flex flex-col px-4 py-6 sm:px-6">
       <div class="w-full max-w-6xl mx-auto flex-1 flex flex-col">
-        <div class="text-center mb-8 mt-4">
-          <h1 class="font-display text-2xl sm:text-3xl text-duo-text mb-1">Build your quiz</h1>
-          <p class="font-body text-duo-gray text-sm">Choose categories and how many questions you want</p>
+        <div class="text-center mb-6">
+          <h1 class="font-display text-xl sm:text-2xl text-duo-text">Build your quiz</h1>
         </div>
 
-        <div class="flex-1 flex flex-col lg:flex-row gap-6">
+        <div class="flex-1 flex flex-col lg:flex-row gap-5">
 
-          <!-- Left sidebar: Study Links based on mistakes -->
-          <aside class="w-full lg:w-64 flex-shrink-0 order-2 lg:order-1 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto">
-            <div class="duo-card sticky top-6">
-              <h2 class="font-body font-bold text-duo-text mb-1">📚 Study Links</h2>
-              <p class="font-body text-xs text-duo-gray-light mb-4">Based on your mistakes</p>
+          <!-- Left sidebar: Study Links -->
+          <aside class="w-full lg:w-56 flex-shrink-0 order-2 lg:order-1 lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto">
+            <div class="duo-card">
+              <h2 class="font-body font-bold text-sm text-duo-text mb-3">📚 Study Links</h2>
               <div x-show="studyLinks.length === 0">
-                <div class="text-center py-4">
-                  <div class="text-3xl mb-2">✨</div>
-                  <p class="font-body text-sm text-duo-gray-light">No mistakes yet — start a quiz!</p>
-                </div>
+                <p class="font-body text-xs text-duo-gray-light text-center py-3">No mistakes yet</p>
               </div>
-              <div class="space-y-2" x-show="studyLinks.length > 0">
+              <div class="space-y-1.5" x-show="studyLinks.length > 0">
                 <template x-for="link in studyLinks" :key="link.url">
                   <a :href="link.url" target="_blank" rel="noopener noreferrer" class="study-link-item">
                     <span class="study-link-badge" x-text="link.errors"></span>
@@ -96,69 +90,69 @@
           <!-- Main content -->
           <div class="flex-1 flex flex-col items-center order-1 lg:order-2">
             <!-- Categories -->
-            <div class="mb-6 w-full max-w-lg">
-              <h2 class="font-body font-bold text-duo-text mb-3">Categories</h2>
-              <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <div class="mb-5 w-full max-w-md">
+              <h2 class="font-body font-bold text-sm text-duo-text mb-2">Categories</h2>
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 <template x-for="cat in categoryRows" :key="cat.id">
                   <label class="duo-chip" :class="{ selected: selected.includes(cat.slug) }">
                     <input type="checkbox" :value="cat.slug" x-model="selected" @change="updateAvailableCount()">
-                    <span class="text-lg" x-text="categoryMeta(cat.slug).emoji"></span>
-                    <span x-text="categoryMeta(cat.slug).name"></span>
+                    <span class="text-base" x-text="categoryMeta(cat.slug).emoji"></span>
+                    <span class="text-xs" x-text="categoryMeta(cat.slug).name"></span>
                   </label>
                 </template>
               </div>
             </div>
 
             <!-- Quantity -->
-            <div class="mb-6 w-full max-w-lg">
-              <h2 class="font-body font-bold text-duo-text mb-3">Number of questions</h2>
-              <div class="font-display text-4xl text-duo-text text-center mb-3" x-text="desiredQty"></div>
-              <div class="flex items-center justify-center gap-2 overflow-x-auto pb-2">
-                <button type="button" class="duo-qty-chip duo-qty-reset" @click="desiredQty = 5" :disabled="desiredQty <= 5">↺</button>
+            <div class="mb-5 w-full max-w-md">
+              <h2 class="font-body font-bold text-sm text-duo-text mb-2">Questions</h2>
+              <div class="font-display text-3xl text-duo-text text-center mb-2" x-text="desiredQty"></div>
+              <div class="flex items-center justify-center gap-1.5 flex-wrap">
+                <button type="button" class="duo-qty-chip" @click="desiredQty = 5" :disabled="desiredQty <= 5">↺</button>
                 <template x-for="qty in [5, 10, 15, 20, 25, 30, 40, 50]" :key="qty">
                   <button type="button" class="duo-qty-chip" :disabled="desiredQty + qty > availableQty" @click="desiredQty = Math.min(desiredQty + qty, availableQty)" x-text="`+${qty}`"></button>
                 </template>
               </div>
-              <p class="font-body text-sm text-duo-gray-light text-center mt-2" x-text="`of ${availableQty} available`"></p>
+              <p class="font-body text-xs text-duo-gray-light text-center mt-2" x-text="`${availableQty} available`"></p>
             </div>
 
-            <!-- Start button -->
-            <div class="mt-auto pt-4 w-full max-w-lg space-y-3">
-              <p x-show="setupError" x-text="setupError" class="font-body font-bold text-sm text-duo-red text-center mb-3"></p>
+            <!-- Start buttons -->
+            <div class="mt-auto pt-4 w-full max-w-md space-y-2.5">
+              <p x-show="setupError" x-text="setupError" class="font-body font-bold text-xs text-duo-red text-center mb-2"></p>
               <button type="button" class="duo-btn duo-btn-green w-full" :disabled="loadingQuiz" @click="startQuiz()">
                 <span x-text="loadingQuiz ? 'LOADING...' : 'START'"></span>
               </button>
               <button type="button" class="duo-btn duo-btn-red w-full" :disabled="loadingQuiz || stats.mistakeCount === 0" @click="startReview()">
-                <span x-text="loadingQuiz ? 'LOADING...' : `🔄 REVIEW MISTAKES (${stats.mistakeCount})`"></span>
+                <span x-text="loadingQuiz ? 'LOADING...' : `REVIEW MISTAKES (${stats.mistakeCount})`"></span>
               </button>
             </div>
           </div>
 
           <!-- Right sidebar: Stats -->
-          <aside class="w-full lg:w-72 flex-shrink-0 order-3 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto" x-show="stats.totalQuestions > 0">
-            <div class="duo-card sticky top-6">
-              <h2 class="font-body font-bold text-duo-text mb-4">📊 Your stats</h2>
+          <aside class="w-full lg:w-60 flex-shrink-0 order-3 lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto" x-show="stats.totalQuestions > 0">
+            <div class="duo-card">
+              <h2 class="font-body font-bold text-sm text-duo-text mb-3">📊 Stats</h2>
 
-              <div class="grid grid-cols-3 gap-2 mb-5">
+              <div class="grid grid-cols-3 gap-1 mb-4">
                 <div class="text-center">
-                  <p class="font-display text-xl text-duo-blue" x-text="`${stats.coveragePct}%`"></p>
-                  <p class="font-body text-xs text-duo-gray">Coverage</p>
+                  <p class="font-display text-lg text-duo-blue" x-text="`${stats.coveragePct}%`"></p>
+                  <p class="font-body text-[10px] text-duo-gray">Coverage</p>
                 </div>
                 <div class="text-center">
-                  <p class="font-display text-xl" :class="stats.accuracyPct >= 70 ? 'text-duo-green' : 'text-duo-red'" x-text="`${stats.accuracyPct}%`"></p>
-                  <p class="font-body text-xs text-duo-gray">Accuracy</p>
+                  <p class="font-display text-lg" :class="stats.accuracyPct >= 70 ? 'text-duo-green' : 'text-duo-red'" x-text="`${stats.accuracyPct}%`"></p>
+                  <p class="font-body text-[10px] text-duo-gray">Accuracy</p>
                 </div>
                 <div class="text-center">
-                  <p class="font-display text-xl text-duo-text" x-text="stats.quizzesTaken"></p>
-                  <p class="font-body text-xs text-duo-gray">Quizzes</p>
+                  <p class="font-display text-lg text-duo-text" x-text="stats.quizzesTaken"></p>
+                  <p class="font-body text-[10px] text-duo-gray">Quizzes</p>
                 </div>
               </div>
 
               <!-- Overall progress bar -->
               <div class="mb-4">
                 <div class="flex justify-between items-center mb-1">
-                  <span class="font-body text-xs text-duo-gray">Answered</span>
-                  <span class="font-body text-xs text-duo-gray" x-text="`${stats.totalAnswered} / ${stats.totalQuestions}`"></span>
+                  <span class="font-body text-[10px] text-duo-gray">Progress</span>
+                  <span class="font-body text-[10px] text-duo-gray" x-text="`${stats.totalAnswered}/${stats.totalQuestions}`"></span>
                 </div>
                 <div class="duo-cat-bar-track">
                   <div class="duo-cat-bar-fill" :style="`width:${stats.coveragePct}%; background:var(--duo-blue);`"></div>
@@ -167,13 +161,13 @@
 
               <!-- Per category -->
               <div x-show="stats.byCategory.length > 0">
-                <p class="font-body font-bold text-xs text-duo-gray uppercase tracking-wide mb-2">By category</p>
-                <div class="space-y-2">
+                <p class="font-body font-bold text-[10px] text-duo-gray uppercase tracking-wide mb-2">By category</p>
+                <div class="space-y-1.5">
                   <template x-for="cat in stats.byCategory" :key="cat.name">
                     <div>
-                      <div class="flex justify-between items-center mb-1">
-                        <span class="font-body text-xs text-duo-text" x-text="cat.name"></span>
-                        <span class="font-body text-xs text-duo-gray" x-text="`${cat.pct}%`"></span>
+                      <div class="flex justify-between items-center mb-0.5">
+                        <span class="font-body text-[11px] text-duo-text" x-text="cat.name"></span>
+                        <span class="font-body text-[10px] text-duo-gray" x-text="`${cat.pct}%`"></span>
                       </div>
                       <div class="duo-cat-bar-track">
                         <div class="duo-cat-bar-fill" :style="`width:${cat.pct}%; background:${cat.color};`"></div>
@@ -191,20 +185,20 @@
 
     <!-- ===================== SCREEN 3 — QUIZ ===================== -->
     <section x-show="screen === 'quiz'" class="screen flex-1 flex flex-col">
-      <header class="px-6 pt-5 pb-3 flex items-center gap-4">
-        <button type="button" @click="exitQuiz()" aria-label="Exit quiz" class="text-duo-gray-light hover:text-duo-gray text-2xl leading-none font-bold">✕</button>
-        <div class="flex-1 h-4 bg-duo-border rounded-full overflow-hidden">
+      <header class="px-6 pt-4 pb-2 flex items-center gap-3">
+        <button type="button" @click="exitQuiz()" aria-label="Exit quiz" class="text-duo-gray-light hover:text-duo-red text-xl leading-none font-bold transition-colors">✕</button>
+        <div class="flex-1 h-3 bg-duo-border rounded-full overflow-hidden">
           <div class="h-full bg-duo-green rounded-full duo-transition" :style="`width: ${progressPct}%`"></div>
         </div>
-        <span class="font-body font-bold text-duo-gray text-sm whitespace-nowrap" x-text="`${currentIndex + 1}/${questions.length}`"></span>
+        <span class="font-body font-bold text-duo-gray text-xs whitespace-nowrap" x-text="`${currentIndex + 1} / ${questions.length}`"></span>
       </header>
 
-      <div class="flex-1 overflow-y-auto px-6 py-4">
-        <div class="max-w-2xl mx-auto" x-show="currentQuestion">
-          <p class="font-body font-bold text-xs uppercase tracking-wide text-duo-blue mb-2" x-text="typeLabel"></p>
-          <h2 class="font-display text-xl sm:text-2xl text-duo-text mb-6 leading-snug" x-text="currentQuestion?.enunciado"></h2>
+      <div class="flex-1 overflow-y-auto px-6 py-6">
+        <div class="max-w-xl mx-auto" x-show="currentQuestion">
+          <p class="font-body font-bold text-[10px] uppercase tracking-widest text-duo-blue mb-3" x-text="typeLabel"></p>
+          <h2 class="font-display text-lg sm:text-xl text-duo-text mb-8 leading-relaxed" x-text="currentQuestion?.enunciado"></h2>
 
-          <div class="space-y-3" role="group" aria-label="Options">
+          <div class="space-y-2.5" role="group" aria-label="Options">
             <template x-for="(texto, idx) in currentQuestion?.alternativas || []" :key="idx">
               <button type="button" class="duo-option w-full"
                 :class="optionClass(letterFromIndex(idx))"
@@ -217,7 +211,7 @@
           </div>
 
           <!-- Report button -->
-          <div class="mt-4 flex justify-end" x-show="checked">
+          <div class="mt-5 flex justify-end" x-show="checked">
             <button type="button" class="duo-report-btn" :disabled="reportSending || reportSent" @click="reportQuestion()" aria-label="Report question">
               <span x-text="reportSent ? '🚩 Reported' : '🚩 Report'"></span>
             </button>
@@ -226,10 +220,10 @@
       </div>
 
       <footer class="duo-action-bar px-6 py-4" :class="{ 'state-correct': checked && lastAnswer?.correct, 'state-incorrect': checked && lastAnswer && !lastAnswer.correct }">
-        <div class="max-w-2xl mx-auto">
+        <div class="max-w-xl mx-auto">
           <div x-show="checked" class="mb-3 font-body">
-            <p class="font-display text-lg mb-1" :style="`color: ${lastAnswer?.correct ? 'var(--duo-green-dark)' : 'var(--duo-red-dark)'}`" x-text="lastAnswer?.correct ? '✅ Correct!' : '❌ Almost!'"></p>
-            <p class="text-sm leading-relaxed" x-text="currentQuestion?.explicacao || ''"></p>
+            <p class="font-display text-base mb-1" :style="`color: ${lastAnswer?.correct ? 'var(--duo-green-dark)' : 'var(--duo-red-dark)'}`" x-text="lastAnswer?.correct ? '✅ Correct!' : '❌ Almost!'"></p>
+            <p class="text-sm leading-relaxed text-duo-gray" x-text="currentQuestion?.explicacao || ''"></p>
           </div>
           <button type="button" class="duo-btn w-full" :class="checked ? (lastAnswer?.correct ? 'duo-btn-green' : 'duo-btn-red') : 'duo-btn-green'"
             :disabled="!checked && currentAnswer.length === 0"
@@ -242,26 +236,26 @@
 
     <!-- ===================== SCREEN 4 — RESULTS ===================== -->
     <section x-show="screen === 'results'" class="screen flex-1 flex flex-col p-6">
-      <div class="w-full max-w-2xl mx-auto flex-1 flex flex-col">
-        <div class="text-center mt-6 mb-8">
-          <div class="text-6xl mb-3" x-text="scorePct >= 80 ? '🏆' : scorePct >= 60 ? '🎉' : '💪'"></div>
-          <h1 class="font-display text-3xl text-duo-text mb-1">Quiz complete!</h1>
-          <p class="font-body text-duo-gray-light text-sm" x-text="`Quiz #${quizNumber} · ${scorePct}%`"></p>
+      <div class="w-full max-w-lg mx-auto flex-1 flex flex-col">
+        <div class="text-center mt-8 mb-6">
+          <div class="text-5xl mb-3" x-text="scorePct >= 80 ? '🏆' : scorePct >= 60 ? '🎉' : '💪'"></div>
+          <h1 class="font-display text-2xl text-duo-text mb-1">Quiz complete!</h1>
+          <p class="font-body text-duo-gray-light text-xs" x-text="`#${quizNumber} · ${scorePct}%`"></p>
         </div>
 
-        <div class="duo-card mb-6 text-center py-6">
-          <p class="font-display text-5xl text-duo-green mb-1" x-text="`${totalCorrect}/${answers.length}`"></p>
-          <p class="font-body text-duo-gray font-bold">correct</p>
+        <div class="duo-card mb-6 text-center py-5">
+          <p class="font-display text-4xl text-duo-green mb-1" x-text="`${totalCorrect}/${answers.length}`"></p>
+          <p class="font-body text-duo-gray text-sm font-bold">correct</p>
         </div>
 
         <div class="mb-6">
-          <h2 class="font-body font-bold text-duo-text mb-3">Performance by category</h2>
-          <div class="space-y-3">
+          <h2 class="font-body font-bold text-sm text-duo-text mb-2">By category</h2>
+          <div class="space-y-2.5">
             <template x-for="item in performanceByCategory" :key="item.name">
               <div>
                 <div class="flex justify-between items-center mb-1">
-                  <span class="font-body font-bold text-sm text-duo-text" x-text="item.name"></span>
-                  <span class="font-body font-bold text-sm text-duo-gray" x-text="`${item.correct}/${item.total}`"></span>
+                  <span class="font-body font-bold text-xs text-duo-text" x-text="item.name"></span>
+                  <span class="font-body text-xs text-duo-gray" x-text="`${item.correct}/${item.total}`"></span>
                 </div>
                 <div class="duo-cat-bar-track">
                   <div class="duo-cat-bar-fill" :style="`width:${item.pct}%; background:${item.color};`"></div>
@@ -272,25 +266,25 @@
         </div>
 
         <div class="mb-6">
-          <button type="button" class="font-body font-bold text-duo-blue text-sm" @click="reviewOpen = !reviewOpen">
+          <button type="button" class="font-body font-bold text-duo-blue text-xs" @click="reviewOpen = !reviewOpen">
             <span x-text="reviewOpen ? 'Hide review ▴' : 'See full review ▾'"></span>
           </button>
-          <div x-show="reviewOpen" class="mt-4 space-y-4">
+          <div x-show="reviewOpen" class="mt-3 space-y-3">
             <template x-for="(r, i) in answers" :key="i">
               <div class="duo-card">
-                <p class="font-body font-bold text-sm text-duo-gray-light mb-1" x-text="`Question ${i + 1} ${r.correct ? '✅' : '❌'}`"></p>
-                <p class="font-body font-bold text-duo-text mb-2" x-text="r.question.enunciado"></p>
-                <p class="font-body text-sm text-duo-gray mb-1">
-                  Your answer: <strong x-text="r.answer.join(', ') || '—'"></strong> ·
-                  Correct: <strong x-text="r.question.resposta_correta.join(', ')"></strong>
+                <p class="font-body font-bold text-xs text-duo-gray-light mb-1" x-text="`#${i + 1} ${r.correct ? '✅' : '❌'}`"></p>
+                <p class="font-body font-bold text-sm text-duo-text mb-1.5" x-text="r.question.enunciado"></p>
+                <p class="font-body text-xs text-duo-gray">
+                  You: <strong x-text="r.answer.join(', ') || '—'"></strong> ·
+                  Answer: <strong x-text="r.question.resposta_correta.join(', ')"></strong>
                 </p>
-                <p class="font-body text-sm text-duo-gray-light" x-text="r.question.explicacao || ''"></p>
+                <p class="font-body text-xs text-duo-gray-light mt-1" x-text="r.question.explicacao || ''"></p>
               </div>
             </template>
           </div>
         </div>
 
-        <div class="mt-auto pt-4 flex flex-col gap-3">
+        <div class="mt-auto pt-4">
           <button type="button" class="duo-btn duo-btn-blue w-full" @click="backToSetup()">NEW QUIZ</button>
         </div>
       </div>
@@ -299,7 +293,6 @@
   </div>
 
   <script>
-    // Theme switcher
     function toggleTheme() {
       const html = document.documentElement;
       const isDark = html.getAttribute('data-theme') === 'dark';
@@ -308,7 +301,6 @@
       localStorage.setItem('quiz_theme', newTheme);
       document.getElementById('theme-icon').textContent = newTheme === 'dark' ? '☀️' : '🌙';
     }
-    // Apply saved theme on load
     (function() {
       const saved = localStorage.getItem('quiz_theme') || 'light';
       if (saved === 'dark') {
