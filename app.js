@@ -421,7 +421,7 @@ document.addEventListener("alpine:init", () => {
         return;
       }
 
-      this.questions = shuffle(data);
+      this.questions = shuffle(data).slice(0, this.desiredQty);
       this.currentIndex = 0;
       this.currentAnswer = [];
       this.checked = false;
