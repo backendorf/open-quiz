@@ -75,32 +75,6 @@ body {
   }
 }
 
-/* ---------- Dark mode switcher ---------- */
-.theme-switcher {
-  position: fixed;
-  top: 1rem;
-  right: 1rem;
-  z-index: 50;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: 2px solid var(--duo-border);
-  background: var(--duo-surface);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.25rem;
-  transition: border-color 0.15s ease, background-color 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-.theme-switcher:hover {
-  border-color: var(--duo-blue);
-}
-.theme-switcher:focus-visible {
-  outline: 2px solid var(--duo-blue);
-  outline-offset: 2px;
-}
 
 /* ---------- Inputs ---------- */
 .duo-input {
