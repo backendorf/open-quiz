@@ -69,6 +69,22 @@ document.addEventListener("alpine:init", () => {
     reportSending: false,
     reportSent: false,
 
+    // modal
+    modalOpen: false,
+    modalMessage: "",
+    modalAction: null,
+
+    showModal(message, action) {
+      this.modalMessage = message;
+      this.modalAction = action;
+      this.modalOpen = true;
+    },
+
+    modalConfirmAction() {
+      this.modalOpen = false;
+      if (this.modalAction) this.modalAction();
+    },
+
     // study links
     studyLinks: [],
 
@@ -483,9 +499,9 @@ document.addEventListener("alpine:init", () => {
     },
 
     exitQuiz() {
-      if (confirm("Exit quiz? Your progress in this round will be lost.")) {
+      this.showModal("Exit quiz? Your progress in this round will be lost.", () => {
         this.screen = "setup";
-      }
+      });
     },
 
     // ---------- SCREEN 4: results ----------

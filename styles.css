@@ -362,6 +362,28 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  background: var(--duo-surface);
+  border: 2px solid var(--duo-border);
+  border-radius: 18px;
+  padding: 2rem;
+  width: 90%;
+  max-width: 360px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+}
+
 /* ---------- Custom scrollbars ---------- */
 ::-webkit-scrollbar {
   width: 6px;
