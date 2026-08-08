@@ -116,11 +116,12 @@ document.addEventListener("alpine:init", () => {
         return;
       }
 
-      // Fetch those questions with their "fonte" field
+      // Fetch those questions with their "fonte" field (exclude reported)
       const { data: questions } = await this.supabaseClient
         .from("questoes")
         .select("id, fonte")
-        .in("id", mistakeIds);
+        .in("id", mistakeIds)
+        .or("reports.is.null,reports.eq.0");
 
       if (!questions) {
         this.studyLinks = [];
@@ -275,11 +276,19 @@ document.addEventListener("alpine:init", () => {
       const uniqueQuizzes = new Set(attempts.map((a) => a.simulado_numero));
       this.stats.quizzesTaken = uniqueQuizzes.size;
 
-      // mistakes: questions never answered correctly
+      // mistakes: questions never answered correctly (exclude reported)
       const correctIds = new Set(attempts.filter((a) => a.acertou).map((a) => a.questao_id));
       const allAttemptedIds = new Set(attempts.map((a) => a.questao_id));
       const neverCorrect = [...allAttemptedIds].filter((id) => !correctIds.has(id));
-      this.stats.mistakeCount = neverCorrect.length;
+
+      // fetch valid (non-reported) question IDs to exclude reported ones
+      const { data: validQuestions } = await this.supabaseClient
+        .from("questoes")
+        .select("id")
+        .in("id", neverCorrect)
+        .or("reports.is.null,reports.eq.0");
+      const validMistakeIds = new Set((validQuestions || []).map((q) => q.id));
+      this.stats.mistakeCount = validMistakeIds.size;
 
       // per category: need question -> category mapping
       const { data: allQuestions } = await this.supabaseClient
