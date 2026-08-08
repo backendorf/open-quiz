@@ -115,7 +115,7 @@
             </div>
 
             <!-- Start button -->
-            <div class="mt-auto pt-4 w-full max-w-lg space-y-3">
+            <div class="pt-6 w-full max-w-lg space-y-3">
               <p x-show="setupError" x-text="setupError" class="font-body font-bold text-sm text-duo-red text-center mb-3"></p>
               <button type="button" class="duo-btn duo-btn-green w-full" :disabled="loadingQuiz" @click="startQuiz()">
                 <span x-text="loadingQuiz ? 'LOADING...' : 'START'"></span>
